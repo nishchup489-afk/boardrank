@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="School ranking detail for the SSC Rank prototype.">
+    <title>School Ranking | SSC Rank</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/rankings.css">
+    <link rel="stylesheet" href="/css/result.css">
+    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/js/result.js"></script>
+  </head>
+  <body data-page="school">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/logo.svg" alt="" width="36" height="36">
+          <span>SSC Rank</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a data-nav="rankings" href="/rankings/?exam=ssc&year=2026&board=chattogram&group=science">Rankings</a>
+          <a data-nav="schools" href="/school/?exam=ssc&year=2026&board=chattogram&group=science&id=1">Schools</a>
+          <a data-nav="methodology" href="/methodology/">Methodology</a>
+          <a data-nav="privacy" href="/privacy/">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <nav class="breadcrumb" data-breadcrumb aria-label="Breadcrumb"></nav>
+      <div data-status class="status-box loading">Loading school ranking...</div>
+
+      <div data-school-content hidden>
+        <section class="school-header" aria-labelledby="school-name">
+          <div class="detail-header">
+            <p class="eyebrow">School ranking</p>
+            <h1 id="school-name" data-school-name>School name</h1>
+            <p class="detail-subtitle" data-school-subtitle></p>
+          </div>
+          <div class="school-summary">
+            <span class="summary-pill">Students: <strong data-school-count>0</strong></span>
+            <span class="summary-pill">Group: <strong data-school-group>Science</strong></span>
+            <span class="summary-pill">Best board rank: <strong data-school-best>#</strong></span>
+          </div>
+        </section>
+
+        <p class="notice compact result-trust">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span><span data-disclaimer></span> <a href="/methodology/">Read the methodology</a></span>
+        </p>
+
+        <section class="podium-section" aria-labelledby="school-top-title">
+          <div class="section-heading">
+            <h2 id="school-top-title">Top 3 students</h2>
+          </div>
+          <div class="podium" data-school-top></div>
+        </section>
+
+        <section class="section" aria-labelledby="school-list-title">
+          <h2 id="school-list-title">School Leaderboard</h2>
+          <div class="school-leaderboard" data-school-leaderboard></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p data-disclaimer></p>
+      </div>
+    </footer>
+  </body>
+</html>

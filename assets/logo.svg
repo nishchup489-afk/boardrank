@@ -1,0 +1,10 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">SSC Rank logo</title>
+  <desc id="desc">A shield with ranked lines for SSC Rank.</desc>
+  <rect width="48" height="48" rx="10" fill="#0F6B70"/>
+  <path d="M24 8L38 14V24C38 32.5 32.1 38.9 24 41C15.9 38.9 10 32.5 10 24V14L24 8Z" fill="#F7FBFB"/>
+  <path d="M18 20H30M18 25H28M18 30H25" stroke="#0F6B70" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="16" cy="20" r="1.6" fill="#D89C18"/>
+  <circle cx="16" cy="25" r="1.6" fill="#8A97A3"/>
+  <circle cx="16" cy="30" r="1.6" fill="#B46D3A"/>
+</svg>

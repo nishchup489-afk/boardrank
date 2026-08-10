@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Search and browse unofficial SSC 2026 Chattogram Board rankings.">
+    <title>Ranking Dashboard | SSC Rank</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/rankings.css">
+    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/js/rankings.js"></script>
+  </head>
+  <body data-page="rankings">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/logo.svg" alt="" width="36" height="36">
+          <span>SSC Rank</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a data-nav="rankings" href="/rankings/?exam=ssc&year=2026&board=chattogram&group=science">Rankings</a>
+          <a data-nav="schools" href="/school/?exam=ssc&year=2026&board=chattogram&group=science&id=1">Schools</a>
+          <a data-nav="methodology" href="/methodology/">Methodology</a>
+          <a data-nav="privacy" href="/privacy/">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <nav class="breadcrumb" data-breadcrumb aria-label="Breadcrumb"></nav>
+
+      <section class="dashboard-header" aria-labelledby="dashboard-title">
+        <div class="dashboard-heading">
+          <p class="dashboard-kicker">Board leaderboard</p>
+          <h1 id="dashboard-title" data-dashboard-title>Rankings</h1>
+          <p class="dashboard-subtitle" data-dashboard-subtitle>Loading context</p>
+        </div>
+        <div class="dashboard-summary" data-dashboard-summary aria-label="Ranking summary"></div>
+      </section>
+
+      <nav class="context-switch" data-group-switch aria-label="Change student group"></nav>
+
+      <section class="search-panel" aria-labelledby="search-title">
+        <div class="search-panel-header">
+          <div>
+            <h2 id="search-title">Find your position</h2>
+            <p>Search the selected group&apos;s demo results.</p>
+          </div>
+          <div class="segmented-control search-modes" data-search-modes aria-label="Search method">
+            <button class="is-active" type="button" data-search-mode="roll" aria-pressed="true">Roll number</button>
+            <button type="button" data-search-mode="name" aria-pressed="false">Student name</button>
+          </div>
+        </div>
+        <form class="search-form" data-search-form>
+          <label class="sr-only" data-search-label for="ranking-search">Roll number</label>
+          <div class="search-row">
+            <div class="search-field">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <input id="ranking-search" data-search-input type="search" inputmode="numeric" placeholder="Enter roll number" autocomplete="off">
+              <button class="clear-search" data-clear-search type="button" aria-label="Clear search" title="Clear search" hidden>
+                <i data-lucide="x" aria-hidden="true"></i>
+              </button>
+            </div>
+            <button class="button search-submit" type="submit">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <span>Find rank</span>
+            </button>
+          </div>
+        </form>
+        <p class="search-feedback" data-search-feedback role="status" aria-live="polite"></p>
+      </section>
+
+      <p class="notice compact rankings-trust">
+        <i data-lucide="shield-check" aria-hidden="true"></i>
+        <span><span data-disclaimer></span> <a href="/methodology/">How ranking works</a></span>
+      </p>
+
+      <div class="status-box loading" data-loading-state>Loading ranking data...</div>
+      <div data-error-state hidden></div>
+
+      <div data-rankings-content hidden>
+        <section class="podium-section" aria-labelledby="podium-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="podium-title">Top 3 Board Students</h2>
+              <p>The highest positions in this group&apos;s demo dataset.</p>
+            </div>
+          </div>
+          <div class="podium" data-podium></div>
+        </section>
+
+        <section class="leaderboard-section" aria-labelledby="leaderboard-title">
+          <div class="leaderboard-tools">
+            <div>
+              <h2 id="leaderboard-title">Board leaderboard</h2>
+              <p class="leaderboard-note" data-leaderboard-note></p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Student</th>
+                  <th scope="col">Roll</th>
+                  <th scope="col">GPA</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Institution/School</th>
+                  <th scope="col">View Details</th>
+                </tr>
+              </thead>
+              <tbody data-leaderboard-body></tbody>
+            </table>
+          </div>
+
+          <div class="mobile-leaderboard" data-mobile-leaderboard aria-label="Mobile leaderboard"></div>
+
+          <nav class="pagination" data-pagination aria-label="Leaderboard pagination">
+            <button class="button secondary" type="button" data-page-prev>Previous</button>
+            <span class="pagination-status" data-page-status-text>Page 1 of 1</span>
+            <button class="button secondary" type="button" data-page-next>Next</button>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p data-disclaimer></p>
+      </div>
+    </footer>
+  </body>
+</html>

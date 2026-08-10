@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Individual student result and unofficial SSC board ranking.">
+    <title>Student Result | SSC Rank</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/rankings.css">
+    <link rel="stylesheet" href="/css/result.css">
+    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/js/result.js"></script>
+  </head>
+  <body data-page="result">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/logo.svg" alt="" width="34" height="34">
+          <span>SSC Rank</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a data-nav="rankings" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">Rankings</a>
+          <a data-nav="schools" href="/school/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science&amp;id=1">Schools</a>
+          <a data-nav="methodology" href="/methodology/">Methodology</a>
+          <a data-nav="privacy" href="/privacy/">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <nav class="breadcrumb" data-breadcrumb aria-label="Breadcrumb"></nav>
+      <div data-status class="status-box loading">Loading student result...</div>
+
+      <div data-result-content hidden>
+        <section class="result-hero" aria-labelledby="student-name">
+          <div class="result-identity">
+            <p class="eyebrow">Student result</p>
+            <h1 id="student-name" data-student-name>Student name</h1>
+            <p class="detail-subtitle" data-student-subtitle></p>
+          </div>
+
+          <div class="result-primary-rank">
+            <span>Board rank</span>
+            <strong data-board-rank>#</strong>
+          </div>
+
+          <div class="result-score-grid" aria-label="Result highlights">
+            <div class="result-score"><span>GPA</span><strong data-result-gpa>0.00</strong></div>
+            <div class="result-score"><span>Total marks</span><strong data-result-total>0</strong></div>
+            <div class="result-score"><span>School rank</span><strong data-school-rank>#</strong></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="button" type="button" data-share-button>
+              <i data-lucide="share-2" aria-hidden="true"></i>
+              <span>Share result</span>
+            </button>
+            <a class="button secondary" data-school-link href="/school/?id=1&amp;group=science">
+              <i data-lucide="school" aria-hidden="true"></i>
+              <span>School ranking</span>
+            </a>
+            <p class="share-feedback" data-share-feedback role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <p class="notice compact result-trust">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span><span data-disclaimer></span> <a href="/methodology/">Read the methodology</a></span>
+        </p>
+
+        <section class="detail-grid">
+          <article class="detail-card student-profile">
+            <h2>Student details</h2>
+            <dl class="profile-list" data-profile-list></dl>
+          </article>
+
+          <article class="detail-card" aria-labelledby="subjects-title">
+            <h2 id="subjects-title">Subject breakdown</h2>
+            <table class="subject-table">
+              <thead>
+                <tr>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Demo marks</th>
+                </tr>
+              </thead>
+              <tbody data-subject-body></tbody>
+            </table>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner"><p data-disclaimer></p></div>
+    </footer>
+  </body>
+</html>

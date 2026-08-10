@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Find unofficial SSC 2026 board and school rankings for Chattogram Board.">
+    <title>Find Your SSC Rank</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <script type="module" src="/js/app.js"></script>
+  </head>
+  <body data-page="home">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/logo.svg" alt="" width="34" height="34">
+          <span>SSC Rank</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a data-nav="rankings" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">Rankings</a>
+          <a data-nav="schools" href="/school/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science&amp;id=1">Schools</a>
+          <a data-nav="methodology" href="/methodology/">Methodology</a>
+          <a data-nav="privacy" href="/privacy/">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell home-page">
+      <section class="home-hero" aria-labelledby="home-title">
+        <div class="home-copy">
+          <div class="context-chips" aria-label="Available ranking context">
+            <span class="context-chip is-live">Demo available</span>
+            <span class="context-chip">SSC 2026</span>
+            <span class="context-chip">Chattogram Board</span>
+          </div>
+          <p class="eyebrow">Unofficial result insights</p>
+          <h1 id="home-title">Find where you stand.</h1>
+          <p class="lead">Search by roll number for an instant result, or find a student by name across Science, Humanities, and Business Studies.</p>
+        </div>
+
+        <section class="home-finder" aria-labelledby="finder-title">
+          <h2 id="finder-title">Find a student</h2>
+          <p>Choose a group, then search the SSC 2026 demo dataset.</p>
+          <form class="finder-form" data-home-search>
+            <div>
+              <span class="form-label">Search with</span>
+              <div class="segmented-control" aria-label="Search method">
+                <button class="is-active" type="button" data-home-mode="roll" aria-pressed="true">Roll number</button>
+                <button type="button" data-home-mode="name" aria-pressed="false">Student name</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label" for="home-group">Student group</label>
+              <select id="home-group" data-home-group>
+                <option value="science">Science</option>
+                <option value="humanities">Humanities / Arts</option>
+                <option value="commerce">Business Studies / Commerce</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" data-home-query-label for="home-query">Roll number</label>
+              <input id="home-query" data-home-query type="search" inputmode="numeric" autocomplete="off" placeholder="Enter roll number" required>
+            </div>
+
+            <button class="button finder-submit" type="submit">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <span>Find rank</span>
+            </button>
+            <p class="finder-error" data-home-error role="alert" hidden></p>
+          </form>
+
+          <p class="notice compact">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            <span>Unofficial ranking using fictional demo data. <a href="/methodology/">How ranking works</a></span>
+          </p>
+        </section>
+      </section>
+
+      <section class="home-trust" aria-label="Ranking features">
+        <div class="trust-item">
+          <span class="trust-icon"><i data-lucide="trophy" aria-hidden="true"></i></span>
+          <div><strong>Board position</strong><span>See a student&apos;s place across the selected group.</span></div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon is-gold"><i data-lucide="school" aria-hidden="true"></i></span>
+          <div><strong>School position</strong><span>Compare students within the same institution.</span></div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon is-sky"><i data-lucide="list-ordered" aria-hidden="true"></i></span>
+          <div><strong>Subject details</strong><span>Review GPA, total marks, and subject breakdowns.</span></div>
+        </div>
+      </section>
+
+      <section class="browse-section" aria-labelledby="browse-title">
+        <div class="browse-heading">
+          <div>
+            <p class="eyebrow">Explore the leaderboard</p>
+            <h2 id="browse-title">Browse by group</h2>
+          </div>
+          <p><a href="/exam/">Change exam or board</a></p>
+        </div>
+
+        <div class="quick-group-grid">
+          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">
+            <span class="group-icon"><i data-lucide="flask-conical" aria-hidden="true"></i></span>
+            <div><h3>Science</h3><p>Physics, chemistry, biology, and higher mathematics.</p></div>
+            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
+          </a>
+          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=humanities">
+            <span class="group-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>
+            <div><h3>Humanities</h3><p>Social science-focused subjects and board positions.</p></div>
+            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
+          </a>
+          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=commerce">
+            <span class="group-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
+            <div><h3>Business Studies</h3><p>Accounting, finance, and business studies results.</p></div>
+            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p data-disclaimer></p>
+        <div class="footer-links">
+          <a href="/methodology/">Methodology</a>
+          <a href="/privacy/">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

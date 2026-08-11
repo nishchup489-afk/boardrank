@@ -17,16 +17,17 @@ function getResultValue(result, key) {
 async function readTraffic(db, now) {
   const today = new Date(now).toISOString().slice(0, 10);
   const activeSince = now - 60_000;
-  const [totalResult, dailyResult, activeResult] = await db.batch([
+  const [totalResult, dailyResult, activeResult, activeBaselineResult] = await db.batch([
     db.prepare("SELECT count FROM traffic_totals WHERE key = 'all'"),
     db.prepare("SELECT count FROM traffic_daily WHERE date = ?").bind(today),
     db.prepare("SELECT COUNT(*) AS count FROM traffic_presence WHERE last_seen >= ?").bind(activeSince),
+    db.prepare("SELECT count FROM traffic_totals WHERE key = 'active-baseline'"),
   ]);
 
   return {
     total: getResultValue(totalResult, "count"),
     today: getResultValue(dailyResult, "count"),
-    active: getResultValue(activeResult, "count"),
+    active: getResultValue(activeBaselineResult, "count") + getResultValue(activeResult, "count"),
     updatedAt: new Date(now).toISOString(),
   };
 }

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Compare two or three SSC 2026 students side by side by roll number.">
+    <meta name="robots" content="noindex,follow">
+    <title>Compare SSC 2026 Students | BoardRank</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/global.css?v=3">
+    <link rel="stylesheet" href="/css/compare.css?v=2">
+    <script type="module" src="/js/app.js?v=6"></script>
+    <script type="module" src="/js/compare.js?v=3"></script>
+  </head>
+  <body data-page="compare">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/logo.svg" alt="" width="34" height="34">
+          <span>SSC Rank</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a data-nav="rankings" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">Rankings</a>
+          <a data-nav="compare" href="/compare/">Compare</a>
+          <a data-nav="schools" href="/school/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">Schools</a>
+          <a data-nav="college" href="/college/">College selection</a>
+          <a data-nav="privacy" href="/privacy/">Privacy</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell compare-page">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>&gt;</span><span aria-current="page">Compare students</span></nav>
+
+      <section class="compare-intro" aria-labelledby="page-title">
+        <p class="eyebrow">SSC 2026 result tools</p>
+        <h1 id="page-title">Compare students</h1>
+        <p class="lead">Compare two or three SSC 2026 results side by side.</p>
+      </section>
+
+      <div class="status-box" data-compare-status role="alert" hidden></div>
+
+      <section class="selector-section" aria-labelledby="selectors-title">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow">Choose students</p>
+            <h2 id="selectors-title">Add by group and roll</h2>
+          </div>
+          <span class="selector-count" data-selector-count>0 of 3 selected</span>
+        </div>
+        <div class="selector-grid" data-selector-grid></div>
+        <button class="button secondary add-student-button" type="button" data-add-student>
+          <span aria-hidden="true">+</span>
+          <span>Add another student</span>
+        </button>
+      </section>
+
+      <section class="comparison-section" data-comparison-section aria-labelledby="comparison-title" hidden>
+        <div class="comparison-heading">
+          <div>
+            <p class="eyebrow">Side-by-side results</p>
+            <h2 id="comparison-title">Comparison</h2>
+          </div>
+          <button class="button secondary" type="button" data-share-comparison>
+            <i data-lucide="share-2" aria-hidden="true"></i>
+            <span>Share comparison</span>
+          </button>
+        </div>
+        <p class="comparison-feedback" data-comparison-feedback role="status" aria-live="polite"></p>
+        <div class="comparison-table-wrap" tabindex="0" aria-label="Scrollable student comparison">
+          <table class="comparison-table" data-comparison-table>
+            <caption class="sr-only">SSC 2026 student result comparison</caption>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p data-disclaimer></p>
+        <div class="footer-links"><a href="/privacy/">Privacy</a><a href="/about/">About us</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

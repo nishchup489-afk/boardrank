@@ -2,6 +2,7 @@ import { PAGE_SIZE, getGroupConfig } from "./app.js";
 import { filterStudents } from "./search.js";
 
 const cache = new Map();
+const rollIndexCache = new Map();
 
 function normalizeStudent(student) {
   const rank = Number(student.rank);
@@ -53,7 +54,10 @@ export async function loadGroupData(group) {
 
 export async function getStudentByRoll(roll, group) {
   const data = await loadGroupData(group);
-  return data.students.find((student) => String(student.roll) === String(roll).trim()) || null;
+  if (!rollIndexCache.has(group)) {
+    rollIndexCache.set(group, new Map(data.students.map((student) => [String(student.roll), student])));
+  }
+  return rollIndexCache.get(group).get(String(roll).trim()) || null;
 }
 
 export async function searchStudents(query, group) {

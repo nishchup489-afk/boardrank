@@ -10,6 +10,7 @@ import {
   validateContext
 } from "./app.js";
 import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js";
+import { addComparisonSelection, buildComparisonPath } from "./compare-state.js";
 
 let context = null;
 let data = null;
@@ -187,6 +188,22 @@ async function shareResult(student) {
   }
 }
 
+function addResultToComparison(student) {
+  const feedback = document.querySelector("[data-share-feedback]");
+  const outcome = addComparisonSelection({ group: context.group, roll: student.roll });
+
+  if (outcome.reason === "full") {
+    feedback.textContent = "Comparison already has three students. Remove one before adding another.";
+    return;
+  }
+  if (outcome.reason === "invalid") {
+    feedback.textContent = "This student could not be added to the comparison.";
+    return;
+  }
+
+  window.location.href = buildComparisonPath(outcome.selections);
+}
+
 async function initResultPage() {
   const status = document.querySelector("[data-status]");
   const content = document.querySelector("[data-result-content]");
@@ -216,6 +233,7 @@ async function initResultPage() {
     content.hidden = false;
     renderResult(student);
     document.querySelector("[data-share-button]").addEventListener("click", () => shareResult(student));
+    document.querySelector("[data-add-to-compare]").addEventListener("click", () => addResultToComparison(student));
   } catch (error) {
     setStatus(status, error.message || "Unable to load the student result.", "error");
   }
@@ -243,7 +261,7 @@ function renderSchoolTopStudents(students) {
     const title = document.createElement("h3");
     title.textContent = student.name;
     const details = document.createElement("p");
-    details.textContent = `Board rank #${student.rank} / Roll ${student.roll}`;
+    details.textContent = `Total marks ${student.total} / Board rank #${student.rank}`;
     copy.append(title, details);
 
     const metrics = document.createElement("div");
@@ -281,7 +299,7 @@ function renderSchoolLeaderboard(students) {
     const title = document.createElement("h3");
     title.textContent = student.name;
     const meta = document.createElement("p");
-    meta.textContent = `Roll ${student.roll} / Board rank #${student.rank}`;
+    meta.textContent = `Total marks ${student.total} / Board rank #${student.rank}`;
     main.append(title, meta);
 
     const score = document.createElement("div");
@@ -307,6 +325,14 @@ function isSearchableSchool(school) {
   return name.length > 2 && /[a-z0-9]/i.test(name);
 }
 
+function findSchoolByQuery(schools, value) {
+  const query = String(value || "").trim().toLowerCase();
+  if (!query) return null;
+  return schools.find((school) => getSchoolName(school).toLowerCase() === query)
+    || schools.find((school) => getSchoolName(school).toLowerCase().includes(query))
+    || null;
+}
+
 function initSchoolSearch(schools, selectedSchool = null) {
   const form = document.querySelector("[data-school-search-form]");
   const input = document.querySelector("[data-school-search-input]");
@@ -324,11 +350,9 @@ function initSchoolSearch(schools, selectedSchool = null) {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const query = input.value.trim().toLowerCase();
+    const query = input.value.trim();
     feedback.hidden = true;
-    const exactMatch = schools.find((school) => getSchoolName(school).toLowerCase() === query);
-    const partialMatch = schools.find((school) => getSchoolName(school).toLowerCase().includes(query));
-    const match = exactMatch || partialMatch;
+    const match = findSchoolByQuery(schools, query);
 
     if (!match) {
       feedback.textContent = "No ranked school matched that name. Try another spelling.";
@@ -351,7 +375,8 @@ async function initSchoolPage() {
   const status = document.querySelector("[data-status]");
   const content = document.querySelector("[data-school-content]");
   const schoolIdParam = getParam("id", "");
-  const schoolId = schoolIdParam ? Number(schoolIdParam) : null;
+  const schoolQuery = getParam("q", "");
+  let schoolId = schoolIdParam ? Number(schoolIdParam) : null;
 
   const validation = validateContext(context);
   if (!validation.ok) {
@@ -367,7 +392,25 @@ async function initSchoolPage() {
         .map((student) => student.schoolId)
     );
     const schools = data.schools.filter((school) => isSearchableSchool(school) && rankedSchoolIds.has(Number(school.id)));
-    const school = schoolId ? getSchoolById(data, schoolId) : null;
+    let school = schoolId ? getSchoolById(data, schoolId) : null;
+
+    if (!schoolId && schoolQuery) {
+      school = findSchoolByQuery(schools, schoolQuery);
+      if (!school) {
+        renderBreadcrumb(document.querySelector("[data-breadcrumb]"), "Schools");
+        initSchoolSearch(schools);
+        setStatus(status, "No ranked school matched that name. Try another spelling.", "error");
+        return;
+      }
+      schoolId = Number(school.id);
+      window.history.replaceState({}, "", buildUrl("/school/", {
+        exam: context.exam,
+        year: context.year,
+        board: context.board,
+        group: context.group,
+        id: schoolId
+      }));
+    }
 
     renderBreadcrumb(document.querySelector("[data-breadcrumb]"), "Schools");
     initSchoolSearch(schools, school && isSearchableSchool(school) ? school : null);

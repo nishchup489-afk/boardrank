@@ -87,6 +87,16 @@
   gap: 14px;
 }
 
+.home-search-modes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-search-modes button {
+  min-height: 44px;
+  padding-right: 6px;
+  padding-left: 6px;
+}
+
 .form-label {
   display: block;
   margin-bottom: 6px;

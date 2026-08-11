@@ -214,6 +214,17 @@ function initChrome() {
     aboutLink.dataset.nav = "about";
     siteNav.append(aboutLink);
   }
+  if (siteNav && !siteNav.querySelector('[data-nav="compare"]')) {
+    const compareLink = createTextElement("a", "", "Compare");
+    compareLink.href = "/compare/";
+    compareLink.dataset.nav = "compare";
+    const rankingsLink = siteNav.querySelector('[data-nav="rankings"]');
+    if (rankingsLink) {
+      rankingsLink.after(compareLink);
+    } else {
+      siteNav.prepend(compareLink);
+    }
+  }
 
   document.querySelectorAll('[data-nav="schools"]').forEach((link) => {
     link.href = buildUrl("/school/", context);
@@ -258,6 +269,9 @@ function initMobileChrome(page) {
     <a class="${activePage === "rankings" ? "is-active" : ""}" href="${rankingsUrl}" ${activePage === "rankings" ? 'aria-current="page"' : ""}>
       <i data-lucide="trophy" aria-hidden="true"></i><span>Rankings</span>
     </a>
+    <a class="${activePage === "compare" ? "is-active" : ""}" href="/compare/" ${activePage === "compare" ? 'aria-current="page"' : ""}>
+      <i data-lucide="git-compare-arrows" aria-hidden="true"></i><span>Compare</span>
+    </a>
     <a class="${activePage === "schools" ? "is-active" : ""}" href="${schoolUrl}" ${activePage === "schools" ? 'aria-current="page"' : ""}>
       <i data-lucide="school" aria-hidden="true"></i><span>Schools</span>
     </a>
@@ -285,6 +299,7 @@ function initIcons() {
     x: '<path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>',
     home: '<path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path>',
     trophy: '<path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0Z"></path><path d="M7 6H4v1a4 4 0 0 0 4 4"></path><path d="M17 6h3v1a4 4 0 0 1-4 4"></path>',
+    "git-compare-arrows": '<path d="m16 3 4 4-4 4"></path><path d="M20 7H4"></path><path d="m8 21-4-4 4-4"></path><path d="M4 17h16"></path>',
     school: '<path d="M3 21h18"></path><path d="M5 21V9l7-5 7 5v12"></path><path d="M9 21v-6h6v6"></path><path d="M8 11h.01"></path><path d="M16 11h.01"></path>',
     menu: '<path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path>',
     "list-checks": '<path d="m3 6 2 2 4-4"></path><path d="M11 6h10"></path><path d="m3 12 2 2 4-4"></path><path d="M11 12h10"></path><path d="m3 18 2 2 4-4"></path><path d="M11 18h10"></path>',
@@ -411,17 +426,28 @@ function initHomeFinder() {
   const error = form.querySelector("[data-home-error]");
   const modeButtons = [...form.querySelectorAll("[data-home-mode]")];
   let mode = "roll";
+  const modeContent = {
+    roll: { label: "Roll number", placeholder: "Enter roll number", inputMode: "numeric", empty: "Enter a roll number." },
+    name: { label: "Student name", placeholder: "Enter student name", inputMode: "search", empty: "Enter a student name." },
+    institution: {
+      label: "Institution name",
+      placeholder: "Enter school or institution name",
+      inputMode: "search",
+      empty: "Enter an institution name."
+    }
+  };
 
   const setMode = (nextMode) => {
-    mode = nextMode;
+    mode = modeContent[nextMode] ? nextMode : "roll";
+    const content = modeContent[mode];
     modeButtons.forEach((button) => {
       const active = button.dataset.homeMode === mode;
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
     });
-    label.textContent = mode === "roll" ? "Roll number" : "Student name";
-    input.placeholder = mode === "roll" ? "Enter roll number" : "Enter student name";
-    input.setAttribute("inputmode", mode === "roll" ? "numeric" : "search");
+    label.textContent = content.label;
+    input.placeholder = content.placeholder;
+    input.setAttribute("inputmode", content.inputMode);
     input.value = "";
     error.hidden = true;
     input.focus();
@@ -437,7 +463,7 @@ function initHomeFinder() {
     error.hidden = true;
 
     if (!query) {
-      error.textContent = mode === "roll" ? "Enter a roll number." : "Enter a student name.";
+      error.textContent = modeContent[mode].empty;
       error.hidden = false;
       input.focus();
       return;
@@ -459,6 +485,11 @@ function initHomeFinder() {
 
     if (mode === "roll") {
       window.location.href = buildUrl("/result/", { ...params, roll: query });
+      return;
+    }
+
+    if (mode === "institution") {
+      window.location.href = buildUrl("/school/", { ...params, q: query });
       return;
     }
 

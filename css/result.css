@@ -157,6 +157,7 @@ body.has-open-modal {
   padding-top: 16px;
 }
 
+.compare-result-button,
 .friend-records-link {
   flex: 1 0 100%;
 }
@@ -577,6 +578,7 @@ body.has-open-modal {
     font-size: 0.8rem;
   }
 
+  .compare-result-button,
   .friend-records-link {
     grid-column: 1 / -1;
   }

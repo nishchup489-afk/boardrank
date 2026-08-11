@@ -8,8 +8,8 @@
     <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/global.css?v=5">
     <link rel="stylesheet" href="/css/home.css?v=5">
-    <script type="module" src="/js/app.js?v=12"></script>
-    <script type="module" src="/js/home.js?v=2"></script>
+    <script type="module" src="/js/app.js?v=13"></script>
+    <script type="module" src="/js/home.js?v=3"></script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3290118997384281"
      crossorigin="anonymous"></script>
@@ -35,15 +35,15 @@
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-copy">
           <div class="context-chips" aria-label="Available ranking context">
-            <span class="context-chip is-live">Science available</span>
+            <span class="context-chip is-live">Science &amp; Business Studies available</span>
             <span class="context-chip">SSC 2026</span>
             <span class="context-chip">Chattogram Board</span>
           </div>
           <p class="eyebrow">Unofficial result insights</p>
           <h1 id="home-title">Find where you stand.</h1>
-          <p class="lead">Search by roll number for an instant result, or find a student by name across Science, Humanities, and Business Studies.</p>
+          <p class="lead">Search by roll number, student name, or institution across the available Science and Business Studies results.</p>
           <p class="notice warning release-notice">
-            <strong>Coming within 24 hours:</strong> Humanities / Arts and Business Studies / Commerce rankings.
+            <strong>Coming soon:</strong> Humanities / Arts rankings and College Selection.
           </p>
         </div>
 
@@ -80,7 +80,7 @@
               <select id="home-group" data-home-group>
                 <option value="science">Science</option>
                 <option value="humanities" disabled>Humanities / Arts - Within 24 hours</option>
-                <option value="commerce" disabled>Business Studies / Commerce - Within 24 hours</option>
+                <option value="commerce">Business Studies / Commerce</option>
               </select>
             </div>
 
@@ -152,11 +152,11 @@
             <div><h3>Humanities / Arts</h3><p>Rankings are being prepared now.</p></div>
             <span class="card-link-label">Coming within 24 hours</span>
           </article>
-          <article class="quick-group-card is-coming-soon" aria-disabled="true">
+          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=commerce">
             <span class="group-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
-            <div><h3>Business Studies / Commerce</h3><p>Rankings are being prepared now.</p></div>
-            <span class="card-link-label">Coming within 24 hours</span>
-          </article>
+            <div><h3>Business Studies / Commerce</h3><p>Accounting, finance and banking, and business entrepreneurship.</p></div>
+            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
+          </a>
         </div>
       </section>
 

@@ -324,6 +324,12 @@ body.has-open-modal {
   border-bottom: 0;
 }
 
+.subject-table .subject-unavailable {
+  color: var(--muted);
+  font-style: italic;
+  text-align: left;
+}
+
 .school-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

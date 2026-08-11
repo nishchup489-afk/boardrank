@@ -1,4 +1,4 @@
-import { loadGroupData } from "./mock-data.js?v=2";
+import { loadGroupData } from "./mock-data.js?v=3";
 
 const loadedGroups = new Set();
 

@@ -8,8 +8,8 @@ import {
   getParam,
   setStatus,
   validateContext
-} from "./app.js?v=12";
-import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=2";
+} from "./app.js?v=13";
+import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=3";
 import { addComparisonSelection, buildComparisonPath } from "./compare-state.js";
 
 let context = null;
@@ -81,9 +81,19 @@ function getStudentUrl(student) {
   });
 }
 
-function renderSubjectRows(student, labels) {
+function renderSubjectRows(student, labels, subjectMarksAvailable) {
   const body = document.querySelector("[data-subject-body]");
   body.textContent = "";
+  if (!subjectMarksAvailable) {
+    const row = document.createElement("tr");
+    const message = document.createElement("td");
+    message.colSpan = 2;
+    message.className = "subject-unavailable";
+    message.textContent = "Subject-wise marks are not available in this dataset.";
+    row.append(message);
+    body.append(row);
+    return;
+  }
   Object.entries(student.subjects || {}).forEach(([key, mark]) => {
     const row = document.createElement("tr");
     const subject = document.createElement("td");
@@ -130,19 +140,26 @@ function renderResult(student) {
   renderBreadcrumb(document.querySelector("[data-breadcrumb]"), student.roll);
   document.title = `${student.name} | SSC Rank`;
 
+  const institution = student.school || "Institution unavailable";
+  const schoolRank = student.schoolRank > 0 ? `#${student.schoolRank}` : "\u2014";
   document.querySelector("[data-student-name]").textContent = student.name;
-  document.querySelector("[data-student-subtitle]").textContent = `Roll ${student.roll} / ${student.school}`;
+  document.querySelector("[data-student-subtitle]").textContent = `Roll ${student.roll} / ${institution}`;
   document.querySelector("[data-board-rank]").textContent = `#${student.rank}`;
-  document.querySelector("[data-school-rank]").textContent = `#${student.schoolRank}`;
+  document.querySelector("[data-school-rank]").textContent = schoolRank;
   document.querySelector("[data-result-gpa]").textContent = student.gpa.toFixed(2);
   document.querySelector("[data-result-total]").textContent = String(student.total);
-  document.querySelector("[data-school-link]").href = buildUrl("/school/", {
-    exam: context.exam,
-    year: context.year,
-    board: context.board,
-    group: context.group,
-    id: student.schoolId
-  });
+  const schoolLink = document.querySelector("[data-school-link]");
+  const hasSchoolRanking = student.schoolId > 0 && student.schoolRank > 0 && Boolean(student.school);
+  schoolLink.hidden = !hasSchoolRanking;
+  if (hasSchoolRanking) {
+    schoolLink.href = buildUrl("/school/", {
+      exam: context.exam,
+      year: context.year,
+      board: context.board,
+      group: context.group,
+      id: student.schoolId
+    });
+  }
   document.querySelector("[data-rankings-link]").href = buildUrl("/rankings/", {
     exam: context.exam,
     year: context.year,
@@ -157,11 +174,11 @@ function renderResult(student) {
     createProfileItem("Exam", formatExam(context)),
     createProfileItem("Board", formatBoard(context.board)),
     createProfileItem("Group", formatGroup(context.group)),
-    createProfileItem("Institution", student.school),
+    createProfileItem("Institution", institution),
     createProfileItem("Dataset", "Available SSC result data")
   );
 
-  renderSubjectRows(student, data.meta.subjectLabels || {});
+  renderSubjectRows(student, data.meta.subjectLabels || {}, data.meta.subjectMarksAvailable);
   renderTopperCelebration(student);
 }
 

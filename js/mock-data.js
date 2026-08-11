@@ -1,4 +1,4 @@
-import { PAGE_SIZE, getGroupConfig } from "./app.js?v=12";
+import { PAGE_SIZE, getGroupConfig } from "./app.js?v=13";
 import { filterStudents } from "./search.js";
 
 const cache = new Map();
@@ -20,9 +20,13 @@ function normalizeStudent(student) {
 
 function normalizeData(group, data) {
   const students = Array.isArray(data.students) ? data.students.map(normalizeStudent) : [];
+  const subjectMarksAvailable = students.some((student) =>
+    Object.values(student.subjects || {}).some((mark) => Number(mark) > 0)
+  );
   return {
     ...data,
     group,
+    meta: { ...(data.meta || {}), subjectMarksAvailable },
     students,
     schools: data.schools || []
   };

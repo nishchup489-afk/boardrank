@@ -19,7 +19,7 @@ export const SUPPORTED_EXAMS = [
     year: "2026",
     label: "SSC 2026",
     status: "active",
-    note: "Chattogram Board Science rankings are available now."
+    note: "Chattogram Board Science and Business Studies rankings are available now."
   },
   { exam: "ssc", year: "2025", label: "SSC 2025", status: "soon", note: "Coming soon" },
   { exam: "hsc", year: "2026", label: "HSC 2026", status: "soon", note: "Coming soon" },
@@ -57,8 +57,8 @@ export const SUPPORTED_GROUPS = [
     id: "commerce",
     label: "Business Studies / Commerce",
     shortLabel: "Business Studies",
-    status: "soon",
-    description: "Business Studies / Commerce rankings are coming within the next 24 hours."
+    status: "active",
+    description: "Business Studies board and school rankings using GPA and total marks."
   }
 ];
 
@@ -666,7 +666,7 @@ function renderBoardSelection() {
       createTextElement(
         "p",
         "",
-        active ? "Science rankings are available now." : "Ranking support for this board is coming soon."
+        active ? "Science and Business Studies rankings are available now." : "Ranking support for this board is coming soon."
       )
     );
 

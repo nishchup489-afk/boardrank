@@ -4,8 +4,8 @@ import {
   createTextElement,
   formatGroup,
   setStatus
-} from "./app.js?v=12";
-import { getStudentByRoll, loadGroupData } from "./mock-data.js?v=2";
+} from "./app.js?v=13";
+import { getStudentByRoll, loadGroupData } from "./mock-data.js?v=3";
 import {
   MAX_COMPARE_STUDENTS,
   buildComparisonPath,
@@ -230,6 +230,7 @@ function renderComparison() {
   const subjectKeys = [];
   const seenSubjects = new Set();
   activeRecords.forEach((record) => {
+    if (record.data.meta?.subjectMarksAvailable === false) return;
     Object.keys(record.student.subjects || {}).forEach((key) => {
       if (seenSubjects.has(key)) return;
       seenSubjects.add(key);
@@ -243,7 +244,9 @@ function renderComparison() {
       addMetricRow(
         body,
         subjectLabel(key, activeRecords),
-        activeRecords.map((record) => record.student.subjects?.[key]),
+        activeRecords.map((record) =>
+          record.data.meta?.subjectMarksAvailable === false ? undefined : record.student.subjects?.[key]
+        ),
         { highlightHighest: true, format: displayNumber }
       );
     });

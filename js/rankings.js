@@ -10,8 +10,8 @@ import {
   persistRecentSelection,
   setStatus,
   validateContext
-} from "./app.js?v=12";
-import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=2";
+} from "./app.js?v=13";
+import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=3";
 import { debounce, filterStudents } from "./search.js";
 
 const MOBILE_PAGE_SIZE = 25;
@@ -143,6 +143,18 @@ function renderGroupSwitch() {
     }
     elements.groupSwitch.append(item);
   });
+
+  const activeItem = elements.groupSwitch.querySelector(".is-active");
+  requestAnimationFrame(() => {
+    if (!activeItem || elements.groupSwitch.scrollWidth <= elements.groupSwitch.clientWidth) return;
+    const switchBox = elements.groupSwitch.getBoundingClientRect();
+    const activeBox = activeItem.getBoundingClientRect();
+    const centeredLeft = elements.groupSwitch.scrollLeft
+      + activeBox.left
+      - switchBox.left
+      - ((elements.groupSwitch.clientWidth - activeBox.width) / 2);
+    elements.groupSwitch.scrollLeft = Math.max(0, centeredLeft);
+  });
 }
 
 function getStudentUrl(student) {
@@ -170,7 +182,7 @@ function renderMetrics(student) {
   [
     ["GPA", student.gpa.toFixed(2)],
     ["Total", student.total],
-    ["School rank", `#${student.schoolRank}`]
+    ["School rank", student.schoolRank > 0 ? `#${student.schoolRank}` : "\u2014"]
   ].forEach(([label, value]) => {
     const metric = document.createElement("span");
     metric.className = "metric";
@@ -214,7 +226,7 @@ function renderPodium() {
     const title = document.createElement("h3");
     title.textContent = student.name;
     const school = document.createElement("p");
-    school.textContent = student.school;
+    school.textContent = student.school || "Institution unavailable";
     copy.append(title, school);
 
     const metrics = document.createElement("div");
@@ -280,11 +292,15 @@ function renderTableRows(rows) {
     total.textContent = String(student.total);
 
     const school = document.createElement("td");
-    const schoolLink = document.createElement("a");
-    schoolLink.className = "school-link";
-    schoolLink.href = getSchoolUrl(student);
-    schoolLink.textContent = student.school;
-    school.append(schoolLink);
+    if (student.schoolId > 0 && student.school) {
+      const schoolLink = document.createElement("a");
+      schoolLink.className = "school-link";
+      schoolLink.href = getSchoolUrl(student);
+      schoolLink.textContent = student.school;
+      school.append(schoolLink);
+    } else {
+      school.textContent = "Institution unavailable";
+    }
 
     const action = document.createElement("td");
     const detailLink = document.createElement("a");
@@ -321,7 +337,7 @@ function renderMobileRows(rows) {
     const title = document.createElement("h3");
     title.textContent = student.name;
     const meta = document.createElement("p");
-    meta.textContent = `${student.school} / Roll ${student.roll}`;
+    meta.textContent = `${student.school || "Institution unavailable"} / Roll ${student.roll}`;
     main.append(title, meta);
 
     const score = document.createElement("div");

@@ -10,8 +10,8 @@ import {
   persistRecentSelection,
   setStatus,
   validateContext
-} from "./app.js";
-import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js";
+} from "./app.js?v=12";
+import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=2";
 import { debounce, filterStudents } from "./search.js";
 
 const MOBILE_PAGE_SIZE = 25;

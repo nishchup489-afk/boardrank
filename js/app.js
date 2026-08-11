@@ -3,6 +3,9 @@ export const PAGE_SIZE = 100;
 export const DISCLAIMER =
   "Unofficial ranking based on available SSC result data. It is not issued or endorsed by the education board.";
 
+const CONSENT_STORAGE_KEY = "boardrank-consent-v3";
+const CONSENT_VERSION = 3;
+
 export const DEFAULT_CONTEXT = {
   exam: "ssc",
   year: "2026",
@@ -199,6 +202,111 @@ export function validateContext(context, options = {}) {
   return { ok: true };
 }
 
+function getConsentRecord() {
+  const read = (storage) => {
+    try {
+      const record = JSON.parse(storage.getItem(CONSENT_STORAGE_KEY) || "null");
+      return record?.version === CONSENT_VERSION && record?.agreedAt ? record : null;
+    } catch {
+      return null;
+    }
+  };
+  return read(localStorage) || read(sessionStorage);
+}
+
+function saveConsentRecord() {
+  const record = { version: CONSENT_VERSION, agreedAt: new Date().toISOString() };
+  try {
+    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(record));
+  } catch {
+    try {
+      sessionStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(record));
+    } catch {
+      // The current page can continue even when browser storage is unavailable.
+    }
+  }
+  return record;
+}
+
+function bindConsentForm(form, onAccept) {
+  if (!form) return;
+  const checks = [...form.querySelectorAll('input[type="checkbox"]')];
+  const submit = form.querySelector('button[type="submit"]');
+  const update = () => {
+    submit.disabled = !checks.every((check) => check.checked);
+  };
+  checks.forEach((check) => check.addEventListener("change", update));
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!checks.every((check) => check.checked)) return;
+    onAccept(saveConsentRecord());
+  });
+  update();
+}
+
+function createConsentGate() {
+  const gate = document.createElement("div");
+  gate.className = "consent-gate";
+  gate.innerHTML = `
+    <section class="consent-dialog" role="dialog" aria-modal="true" aria-labelledby="consent-title" aria-describedby="consent-summary">
+      <p class="consent-kicker">Before you continue</p>
+      <h2 id="consent-title">BoardRank Disclaimer and Data Notice</h2>
+      <p id="consent-summary" class="consent-summary">BoardRank is independent and unofficial. Its rankings are BoardRank calculations based on publicly accessible result information and may contain errors or omissions.</p>
+      <p class="consent-contact">Need a correction or removal? Email <a href="mailto:nishchup489@gmail.com">nishchup489@gmail.com</a>.</p>
+      <form class="consent-form" data-consent-form>
+        <label class="consent-choice">
+          <input type="checkbox" name="identity" required>
+          <span>I confirm that I am the person identified by this result, or I am authorized to act on their behalf.</span>
+        </label>
+        <label class="consent-choice">
+          <input type="checkbox" name="processing" required>
+          <span>I consent to BoardRank processing the information I provide for the purposes in the Privacy Notice.</span>
+        </label>
+        <div class="consent-actions">
+          <a href="/agreement/">Read more</a>
+          <button class="button" type="submit" disabled>Agree and continue</button>
+        </div>
+      </form>
+    </section>`;
+
+  document.body.append(gate);
+  [...document.body.children].forEach((child) => {
+    if (child === gate) return;
+    child.inert = true;
+    child.setAttribute("inert", "");
+    child.setAttribute("aria-hidden", "true");
+  });
+  document.body.classList.add("has-consent-gate");
+  bindConsentForm(gate.querySelector("[data-consent-form]"), () => window.location.reload());
+  gate.querySelector('input[type="checkbox"]').focus();
+}
+
+function initConsentGate(page) {
+  if (page === "agreement" || getConsentRecord()) return true;
+  createConsentGate();
+  return false;
+}
+
+function initAgreementPage() {
+  const status = document.querySelector("[data-agreement-status]");
+  const badge = document.querySelector("[data-agreement-badge]");
+  const detail = document.querySelector("[data-agreement-detail]");
+  const form = document.querySelector("[data-agreement-form]");
+
+  const render = (record) => {
+    const agreed = Boolean(record);
+    status.classList.toggle("is-agreed", agreed);
+    badge.textContent = agreed ? "Agreed" : "Action required";
+    detail.textContent = agreed
+      ? `Accepted on ${new Date(record.agreedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}.`
+      : "Review the notice and confirm both statements to continue using BoardRank.";
+    form.hidden = agreed;
+  };
+
+  render(getConsentRecord());
+  bindConsentForm(form, render);
+}
+
 function initChrome() {
   const page = document.body.dataset.page || "";
   const context = getContext();
@@ -223,6 +331,17 @@ function initChrome() {
       rankingsLink.after(compareLink);
     } else {
       siteNav.prepend(compareLink);
+    }
+  }
+  if (siteNav && !siteNav.querySelector('[data-nav="agreement"]')) {
+    const agreementLink = createTextElement("a", "", "Agreement");
+    agreementLink.href = "/agreement/";
+    agreementLink.dataset.nav = "agreement";
+    const aboutLink = siteNav.querySelector('[data-nav="about"]');
+    if (aboutLink) {
+      aboutLink.before(agreementLink);
+    } else {
+      siteNav.append(agreementLink);
     }
   }
 
@@ -275,11 +394,12 @@ function initMobileChrome(page) {
     <a class="${activePage === "schools" ? "is-active" : ""}" href="${schoolUrl}" ${activePage === "schools" ? 'aria-current="page"' : ""}>
       <i data-lucide="school" aria-hidden="true"></i><span>Schools</span>
     </a>
-    <details class="mobile-more ${["college", "privacy", "about"].includes(activePage) ? "is-active" : ""}">
+    <details class="mobile-more ${["college", "privacy", "agreement", "about"].includes(activePage) ? "is-active" : ""}">
       <summary><i data-lucide="menu" aria-hidden="true"></i><span>More</span></summary>
       <div class="mobile-more-menu">
         <a href="/college/"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>College selection</span></a>
         <a href="/privacy/"><i data-lucide="lock-keyhole" aria-hidden="true"></i><span>Privacy</span></a>
+        <a href="/agreement/"><i data-lucide="file-check-2" aria-hidden="true"></i><span>Agreement</span></a>
         <a href="/about/"><i data-lucide="users" aria-hidden="true"></i><span>About us</span></a>
       </div>
     </details>`;
@@ -304,6 +424,7 @@ function initIcons() {
     menu: '<path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path>',
     "list-checks": '<path d="m3 6 2 2 4-4"></path><path d="M11 6h10"></path><path d="m3 12 2 2 4-4"></path><path d="M11 12h10"></path><path d="m3 18 2 2 4-4"></path><path d="M11 18h10"></path>',
     "lock-keyhole": '<rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><path d="M12 15v3"></path>',
+    "file-check-2": '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5Z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="m9 15 2 2 4-4"></path>',
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3Z"></path><path d="m9 12 2 2 4-4"></path>',
     "flask-conical": '<path d="M9 3h6"></path><path d="M10 9V3"></path><path d="M14 9V3"></path><path d="m8 9-5 9a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-5-9"></path><path d="M6 15h12"></path>',
     "book-open": '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2Z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7Z"></path>',
@@ -448,6 +569,11 @@ function initHomeFinder() {
     label.textContent = content.label;
     input.placeholder = content.placeholder;
     input.setAttribute("inputmode", content.inputMode);
+    if (mode === "institution") {
+      input.setAttribute("list", "home-institution-options");
+    } else {
+      input.removeAttribute("list");
+    }
     input.value = "";
     error.hidden = true;
     input.focus();
@@ -605,10 +731,16 @@ function renderGroupSelection() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (document.documentElement.dataset.sscAppInitialized === "true") return;
+  document.documentElement.dataset.sscAppInitialized = "true";
   initChrome();
+  const page = document.body.dataset.page;
+  if (!initConsentGate(page)) return;
   initActivityCounters();
 
-  const page = document.body.dataset.page;
+  if (page === "agreement") {
+    initAgreementPage();
+  }
   if (page === "home" || page === "exam") {
     initExamSelection();
   }

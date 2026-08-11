@@ -8,8 +8,8 @@ import {
   getParam,
   setStatus,
   validateContext
-} from "./app.js";
-import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js";
+} from "./app.js?v=12";
+import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=2";
 import { addComparisonSelection, buildComparisonPath } from "./compare-state.js";
 
 let context = null;

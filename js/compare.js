@@ -4,8 +4,8 @@ import {
   createTextElement,
   formatGroup,
   setStatus
-} from "./app.js";
-import { getStudentByRoll, loadGroupData } from "./mock-data.js";
+} from "./app.js?v=12";
+import { getStudentByRoll, loadGroupData } from "./mock-data.js?v=2";
 import {
   MAX_COMPARE_STUDENTS,
   buildComparisonPath,

@@ -584,6 +584,11 @@
     padding: 20px 0 24px;
   }
 
+  .home-copy .context-chips,
+  .home-copy .lead {
+    display: none;
+  }
+
   .home-copy {
     gap: 12px;
   }
@@ -592,10 +597,6 @@
     max-width: 340px;
     font-size: 2.45rem;
     line-height: 1.04;
-  }
-
-  .home-copy .lead {
-    font-size: 0.94rem;
   }
 
   .home-finder {

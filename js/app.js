@@ -203,6 +203,11 @@ function initChrome() {
   const page = document.body.dataset.page || "";
   const context = getContext();
   const siteNav = document.querySelector(".site-nav");
+  document.querySelectorAll('[data-nav="methodology"]').forEach((link) => {
+    link.dataset.nav = "college";
+    link.href = "/college/";
+    link.textContent = "College selection";
+  });
   if (siteNav && !siteNav.querySelector('[data-nav="about"]')) {
     const aboutLink = createTextElement("a", "", "About us");
     aboutLink.href = "/about/";
@@ -256,10 +261,10 @@ function initMobileChrome(page) {
     <a class="${activePage === "schools" ? "is-active" : ""}" href="${schoolUrl}" ${activePage === "schools" ? 'aria-current="page"' : ""}>
       <i data-lucide="school" aria-hidden="true"></i><span>Schools</span>
     </a>
-    <details class="mobile-more ${["methodology", "privacy", "about"].includes(activePage) ? "is-active" : ""}">
+    <details class="mobile-more ${["college", "privacy", "about"].includes(activePage) ? "is-active" : ""}">
       <summary><i data-lucide="menu" aria-hidden="true"></i><span>More</span></summary>
       <div class="mobile-more-menu">
-        <a href="/methodology/"><i data-lucide="list-checks" aria-hidden="true"></i><span>Methodology</span></a>
+        <a href="/college/"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>College selection</span></a>
         <a href="/privacy/"><i data-lucide="lock-keyhole" aria-hidden="true"></i><span>Privacy</span></a>
         <a href="/about/"><i data-lucide="users" aria-hidden="true"></i><span>About us</span></a>
       </div>
@@ -290,7 +295,8 @@ function initIcons() {
     "chart-no-axes-combined": '<path d="m3 17 6-6 4 4 8-8"></path><path d="M17 7h4v4"></path><path d="M5 21h14"></path>',
     "list-ordered": '<path d="M10 6h11"></path><path d="M10 12h11"></path><path d="M10 18h11"></path><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-1 2-3 0-1-.5-2-2-2"></path>',
     "share-2": '<circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4"></path><path d="m8.6 13.5 6.8 4"></path>',
-    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
+    "graduation-cap": '<path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path><path d="M22 10v6"></path>'
   };
 
   document.querySelectorAll("i[data-lucide]").forEach((placeholder) => {

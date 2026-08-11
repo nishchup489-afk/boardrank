@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Search-result and comparison URLs are user-specific or duplicate views.
+Disallow: /result/?
+Disallow: /compare/?

@@ -94,6 +94,37 @@ function renderSubjectRows(student, labels) {
   });
 }
 
+function renderTopperCelebration(student) {
+  if (student.rank !== 1) return;
+
+  const shoutout = document.querySelector("[data-topper-shoutout]");
+  const modal = document.querySelector("[data-topper-modal]");
+  const topperLabel = `TOPPER OF SSC 2K${String(context.year).slice(-2)} ${formatGroup(context.group).toUpperCase()}`;
+
+  document.querySelector("[data-topper-name]").textContent = student.name;
+  document.querySelector("[data-topper-school]").textContent = student.school;
+  document.querySelector("[data-topper-title]").textContent = topperLabel;
+  document.querySelector("[data-topper-modal-name]").textContent = student.name;
+  document.querySelector("[data-topper-modal-school]").textContent = student.school;
+  document.querySelector("[data-topper-modal-title]").textContent = topperLabel;
+  shoutout.hidden = false;
+  modal.hidden = false;
+  document.body.classList.add("has-open-modal");
+
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.classList.remove("has-open-modal");
+  };
+
+  modal.querySelectorAll("[data-topper-close]").forEach((button) => {
+    button.addEventListener("click", closeModal);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+  modal.querySelector(".topper-modal-close").focus();
+}
+
 function renderResult(student) {
   renderBreadcrumb(document.querySelector("[data-breadcrumb]"), student.roll);
   document.title = `${student.name} | SSC Rank`;
@@ -111,6 +142,12 @@ function renderResult(student) {
     group: context.group,
     id: student.schoolId
   });
+  document.querySelector("[data-rankings-link]").href = buildUrl("/rankings/", {
+    exam: context.exam,
+    year: context.year,
+    board: context.board,
+    group: context.group
+  });
 
   const profile = document.querySelector("[data-profile-list]");
   profile.textContent = "";
@@ -120,10 +157,11 @@ function renderResult(student) {
     createProfileItem("Board", formatBoard(context.board)),
     createProfileItem("Group", formatGroup(context.group)),
     createProfileItem("Institution", student.school),
-    createProfileItem("Dataset", "Fictional demo data")
+    createProfileItem("Dataset", "Available SSC result data")
   );
 
   renderSubjectRows(student, data.meta.subjectLabels || {});
+  renderTopperCelebration(student);
 }
 
 async function shareResult(student) {
@@ -131,7 +169,7 @@ async function shareResult(student) {
   feedback.textContent = "Preparing share...";
   const shareData = {
     title: `${student.name} | SSC Rank`,
-    text: `${student.name} is board rank #${student.rank} in this unofficial SSC Rank demo.`,
+    text: `${student.name} is board rank #${student.rank} in this unofficial SSC Rank listing.`,
     url: window.location.href
   };
 
@@ -260,10 +298,60 @@ function renderSchoolLeaderboard(students) {
   });
 }
 
+function getSchoolName(school) {
+  return String(school?.name || school?.school || "").trim();
+}
+
+function isSearchableSchool(school) {
+  const name = getSchoolName(school);
+  return name.length > 2 && /[a-z0-9]/i.test(name);
+}
+
+function initSchoolSearch(schools, selectedSchool = null) {
+  const form = document.querySelector("[data-school-search-form]");
+  const input = document.querySelector("[data-school-search-input]");
+  const options = document.querySelector("[data-school-options]");
+  const feedback = document.querySelector("[data-school-search-feedback]");
+  if (!form || !input || !options) return;
+
+  options.textContent = "";
+  schools.forEach((school) => {
+    const option = document.createElement("option");
+    option.value = getSchoolName(school);
+    options.append(option);
+  });
+  if (selectedSchool) input.value = getSchoolName(selectedSchool);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = input.value.trim().toLowerCase();
+    feedback.hidden = true;
+    const exactMatch = schools.find((school) => getSchoolName(school).toLowerCase() === query);
+    const partialMatch = schools.find((school) => getSchoolName(school).toLowerCase().includes(query));
+    const match = exactMatch || partialMatch;
+
+    if (!match) {
+      feedback.textContent = "No ranked school matched that name. Try another spelling.";
+      feedback.hidden = false;
+      input.focus();
+      return;
+    }
+
+    window.location.href = buildUrl("/school/", {
+      exam: context.exam,
+      year: context.year,
+      board: context.board,
+      group: context.group,
+      id: match.id
+    });
+  });
+}
+
 async function initSchoolPage() {
   const status = document.querySelector("[data-status]");
   const content = document.querySelector("[data-school-content]");
-  const schoolId = Number(getParam("id", "1"));
+  const schoolIdParam = getParam("id", "");
+  const schoolId = schoolIdParam ? Number(schoolIdParam) : null;
 
   const validation = validateContext(context);
   if (!validation.ok) {
@@ -273,19 +361,37 @@ async function initSchoolPage() {
 
   try {
     data = await loadGroupData(context.group);
-    const school = getSchoolById(data, schoolId);
+    const rankedSchoolIds = new Set(
+      data.students
+        .filter((student) => student.rank > 0 && student.schoolRank > 0)
+        .map((student) => student.schoolId)
+    );
+    const schools = data.schools.filter((school) => isSearchableSchool(school) && rankedSchoolIds.has(Number(school.id)));
+    const school = schoolId ? getSchoolById(data, schoolId) : null;
+
+    renderBreadcrumb(document.querySelector("[data-breadcrumb]"), "Schools");
+    initSchoolSearch(schools, school && isSearchableSchool(school) ? school : null);
+
+    if (!schoolId) {
+      clearStatus(status);
+      return;
+    }
+
     const students = data.students
-      .filter((student) => student.schoolId === schoolId)
+      .filter(
+        (student) =>
+          student.schoolId === schoolId && student.rank > 0 && student.schoolRank > 0
+      )
       .sort((a, b) => a.schoolRank - b.schoolRank || a.rank - b.rank);
 
-    if (!school || !students.length) {
-      setStatus(status, "School not found for this group.", "error");
+    if (!school || !isSearchableSchool(school) || !students.length) {
+      setStatus(status, "No ranked students were found for that school. Search for another school above.", "error");
       return;
     }
 
     clearStatus(status);
     content.hidden = false;
-    const schoolName = school.name || school.school;
+    const schoolName = getSchoolName(school);
     document.title = `${schoolName} | SSC Rank`;
     renderBreadcrumb(document.querySelector("[data-breadcrumb]"), schoolName);
     document.querySelector("[data-school-name]").textContent = schoolName;

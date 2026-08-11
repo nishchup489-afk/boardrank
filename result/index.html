@@ -6,11 +6,11 @@
     <meta name="description" content="Individual student result and unofficial SSC board ranking.">
     <title>Student Result | SSC Rank</title>
     <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/rankings.css">
-    <link rel="stylesheet" href="/css/result.css">
-    <script type="module" src="/js/app.js"></script>
-    <script type="module" src="/js/result.js"></script>
+    <link rel="stylesheet" href="/css/global.css?v=2">
+    <link rel="stylesheet" href="/css/rankings.css?v=3">
+    <link rel="stylesheet" href="/css/result.css?v=4">
+    <script type="module" src="/js/app.js?v=4"></script>
+    <script type="module" src="/js/result.js?v=3"></script>
   </head>
   <body data-page="result">
     <header class="site-header">
@@ -33,6 +33,19 @@
       <div data-status class="status-box loading">Loading student result...</div>
 
       <div data-result-content hidden>
+        <section class="topper-shoutout" data-topper-shoutout aria-labelledby="topper-shoutout-title" hidden>
+          <svg class="topper-crown" viewBox="0 0 64 42" aria-hidden="true">
+            <path d="M6 33 2 10l15 10L32 3l15 17 15-10-4 23H6Z"></path>
+            <path d="M7 37h50"></path>
+          </svg>
+          <div>
+            <p class="eyebrow">Huge shoutout</p>
+            <h2 id="topper-shoutout-title"><span data-topper-name></span> is the board topper</h2>
+            <p>Representing <strong data-topper-school></strong></p>
+          </div>
+          <strong class="topper-title" data-topper-title></strong>
+        </section>
+
         <section class="result-hero" aria-labelledby="student-name">
           <div class="result-identity">
             <p class="eyebrow">Student result</p>
@@ -60,6 +73,10 @@
               <i data-lucide="school" aria-hidden="true"></i>
               <span>School ranking</span>
             </a>
+            <a class="button secondary friend-records-link" data-rankings-link href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">
+              <i data-lucide="users" aria-hidden="true"></i>
+              <span>See other friends&apos; records</span>
+            </a>
             <p class="share-feedback" data-share-feedback role="status" aria-live="polite"></p>
           </div>
         </section>
@@ -81,7 +98,7 @@
               <thead>
                 <tr>
                   <th scope="col">Subject</th>
-                  <th scope="col">Demo marks</th>
+                  <th scope="col">Marks</th>
                 </tr>
               </thead>
               <tbody data-subject-body></tbody>
@@ -90,6 +107,24 @@
         </section>
       </div>
     </main>
+
+    <div class="topper-modal" data-topper-modal hidden>
+      <button class="topper-modal-backdrop" type="button" data-topper-close aria-label="Close celebration"></button>
+      <section class="topper-modal-panel" role="dialog" aria-modal="true" aria-labelledby="topper-modal-title">
+        <button class="topper-modal-close" type="button" data-topper-close aria-label="Close celebration">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+        <svg class="topper-modal-crown" viewBox="0 0 64 42" aria-hidden="true">
+          <path d="M6 33 2 10l15 10L32 3l15 17 15-10-4 23H6Z"></path>
+          <path d="M7 37h50"></path>
+        </svg>
+        <p class="eyebrow">Huge shoutout</p>
+        <h2 id="topper-modal-title">Congratulations, <span data-topper-modal-name></span>!</h2>
+        <p>From <strong data-topper-modal-school></strong></p>
+        <strong class="topper-modal-title" data-topper-modal-title></strong>
+        <button class="button" type="button" data-topper-close>View topper result</button>
+      </section>
+    </div>
 
     <footer class="site-footer">
       <div class="footer-inner"><p data-disclaimer></p></div>

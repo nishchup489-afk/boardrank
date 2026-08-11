@@ -39,8 +39,10 @@ function cacheElements() {
     tableBody: document.querySelector("[data-leaderboard-body]"),
     mobileList: document.querySelector("[data-mobile-leaderboard]"),
     pagination: document.querySelector("[data-pagination]"),
+    first: document.querySelector("[data-page-first]"),
     prev: document.querySelector("[data-page-prev]"),
     next: document.querySelector("[data-page-next]"),
+    last: document.querySelector("[data-page-last]"),
     pageStatus: document.querySelector("[data-page-status-text]"),
     leaderboardNote: document.querySelector("[data-leaderboard-note]"),
     searchForm: document.querySelector("[data-search-form]"),
@@ -120,19 +122,26 @@ function renderHeader() {
 function renderGroupSwitch() {
   elements.groupSwitch.textContent = "";
   SUPPORTED_GROUPS.forEach((group) => {
-    const link = document.createElement("a");
-    link.href = buildUrl("/rankings/", {
-      exam: context.exam,
-      year: context.year,
-      board: context.board,
-      group: group.id
-    });
-    link.textContent = group.shortLabel;
-    if (group.id === context.group) {
-      link.classList.add("is-active");
-      link.setAttribute("aria-current", "page");
+    const active = group.status === "active";
+    const item = active ? document.createElement("a") : document.createElement("span");
+    if (active) {
+      item.href = buildUrl("/rankings/", {
+        exam: context.exam,
+        year: context.year,
+        board: context.board,
+        group: group.id
+      });
+    } else {
+      item.className = "is-disabled";
+      item.setAttribute("aria-disabled", "true");
+      item.title = "Coming within the next 24 hours";
     }
-    elements.groupSwitch.append(link);
+    item.textContent = active ? group.shortLabel : `${group.shortLabel} - Soon`;
+    if (group.id === context.group) {
+      item.classList.add("is-active");
+      item.setAttribute("aria-current", "page");
+    }
+    elements.groupSwitch.append(item);
   });
 }
 
@@ -175,6 +184,15 @@ function renderMetrics(student) {
   return fragment;
 }
 
+function createPodiumCrown(rank) {
+  const crown = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  crown.setAttribute("viewBox", "0 0 64 42");
+  crown.setAttribute("aria-hidden", "true");
+  crown.classList.add("podium-crown", `crown-${rank}`);
+  crown.innerHTML = '<path d="M6 33 2 10l15 10L32 3l15 17 15-10-4 23H6Z"></path><path d="M7 37h50"></path>';
+  return crown;
+}
+
 function renderPodium() {
   elements.podium.textContent = "";
   groupData.students.slice(0, 3).forEach((student) => {
@@ -212,7 +230,7 @@ function renderPodium() {
     arrow.textContent = "->";
     linkLabel.append(label, arrow);
 
-    card.append(rankBadge, rankNumber, copy, metrics, linkLabel);
+    card.append(createPodiumCrown(student.rank), rankBadge, rankNumber, copy, metrics, linkLabel);
     elements.podium.append(card);
   });
 }
@@ -340,8 +358,10 @@ function getVisibleRows() {
 }
 
 function renderPagination(pageData) {
+  elements.first.disabled = pageData.page <= 1;
   elements.prev.disabled = pageData.page <= 1;
   elements.next.disabled = pageData.page >= pageData.totalPages;
+  elements.last.disabled = pageData.page >= pageData.totalPages;
   elements.pageStatus.textContent = `Page ${pageData.page} of ${pageData.totalPages}`;
   elements.pagination.hidden = pageData.totalRows === 0;
 }
@@ -480,8 +500,18 @@ function bindEvents() {
     renderLeaderboard();
   });
 
+  elements.first.addEventListener("click", () => {
+    currentPage = 1;
+    renderLeaderboard();
+  });
+
   elements.next.addEventListener("click", () => {
     currentPage += 1;
+    renderLeaderboard();
+  });
+
+  elements.last.addEventListener("click", () => {
+    currentPage = getVisibleRows().totalPages;
     renderLeaderboard();
   });
 
@@ -509,6 +539,12 @@ async function init() {
 
   try {
     groupData = await loadGroupData(context.group);
+    groupData = {
+      ...groupData,
+      students: groupData.students
+        .filter((student) => student.rank > 0)
+        .sort((a, b) => a.rank - b.rank)
+    };
     renderBreadcrumb();
     renderHeader();
     renderGroupSwitch();

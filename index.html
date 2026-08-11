@@ -6,9 +6,9 @@
     <meta name="description" content="Find unofficial SSC 2026 board and school rankings for Chattogram Board.">
     <title>Find Your SSC Rank</title>
     <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/home.css">
-    <script type="module" src="/js/app.js"></script>
+    <link rel="stylesheet" href="/css/global.css?v=2">
+    <link rel="stylesheet" href="/css/home.css?v=4">
+    <script type="module" src="/js/app.js?v=4"></script>
   </head>
   <body data-page="home">
     <header class="site-header">
@@ -18,6 +18,7 @@
           <span>SSC Rank</span>
         </a>
         <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#boards">Boards</a>
           <a data-nav="rankings" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">Rankings</a>
           <a data-nav="schools" href="/school/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science&amp;id=1">Schools</a>
           <a data-nav="methodology" href="/methodology/">Methodology</a>
@@ -30,18 +31,21 @@
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-copy">
           <div class="context-chips" aria-label="Available ranking context">
-            <span class="context-chip is-live">Demo available</span>
+            <span class="context-chip is-live">Science available</span>
             <span class="context-chip">SSC 2026</span>
             <span class="context-chip">Chattogram Board</span>
           </div>
           <p class="eyebrow">Unofficial result insights</p>
           <h1 id="home-title">Find where you stand.</h1>
           <p class="lead">Search by roll number for an instant result, or find a student by name across Science, Humanities, and Business Studies.</p>
+          <p class="notice warning release-notice">
+            <strong>Coming within 24 hours:</strong> Humanities / Arts and Business Studies / Commerce rankings.
+          </p>
         </div>
 
         <section class="home-finder" aria-labelledby="finder-title">
           <h2 id="finder-title">Find a student</h2>
-          <p>Choose a group, then search the SSC 2026 demo dataset.</p>
+          <p>Choose a group, then search the available SSC 2026 result records.</p>
           <form class="finder-form" data-home-search>
             <div>
               <span class="form-label">Search with</span>
@@ -52,11 +56,26 @@
             </div>
 
             <div>
+              <label class="form-label" for="home-board">Education board</label>
+              <select id="home-board" data-home-board>
+                <option value="chattogram" selected>Chattogram Board</option>
+                <option value="dhaka" disabled>Dhaka Board - Coming soon</option>
+                <option value="cumilla" disabled>Cumilla Board - Coming soon</option>
+                <option value="rajshahi" disabled>Rajshahi Board - Coming soon</option>
+                <option value="jessore" disabled>Jessore Board - Coming soon</option>
+                <option value="barishal" disabled>Barishal Board - Coming soon</option>
+                <option value="sylhet" disabled>Sylhet Board - Coming soon</option>
+                <option value="dinajpur" disabled>Dinajpur Board - Coming soon</option>
+                <option value="mymensingh" disabled>Mymensingh Board - Coming soon</option>
+              </select>
+            </div>
+
+            <div>
               <label class="form-label" for="home-group">Student group</label>
               <select id="home-group" data-home-group>
                 <option value="science">Science</option>
-                <option value="humanities">Humanities / Arts</option>
-                <option value="commerce">Business Studies / Commerce</option>
+                <option value="humanities" disabled>Humanities / Arts - Within 24 hours</option>
+                <option value="commerce" disabled>Business Studies / Commerce - Within 24 hours</option>
               </select>
             </div>
 
@@ -74,9 +93,22 @@
 
           <p class="notice compact">
             <i data-lucide="shield-check" aria-hidden="true"></i>
-            <span>Unofficial ranking using fictional demo data. <a href="/methodology/">How ranking works</a></span>
+            <span>Unofficial ranking based on available SSC result data. <a href="/methodology/">How ranking works</a></span>
           </p>
         </section>
+      </section>
+
+      <section class="board-section" id="boards" aria-labelledby="boards-title">
+        <div class="browse-heading">
+          <div>
+            <p class="eyebrow">Start with your board</p>
+            <h2 id="boards-title">Choose an education board</h2>
+          </div>
+          <p>SSC 2026</p>
+        </div>
+        <p class="section-lead">Chattogram Board is available now. Support for the remaining education boards is being prepared.</p>
+        <div class="status-box" data-page-status hidden></div>
+        <div class="selection-grid home-board-grid" data-board-grid></div>
       </section>
 
       <section class="home-trust" aria-label="Ranking features">
@@ -109,26 +141,50 @@
             <div><h3>Science</h3><p>Physics, chemistry, biology, and higher mathematics.</p></div>
             <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
           </a>
-          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=humanities">
+          <article class="quick-group-card is-coming-soon" aria-disabled="true">
             <span class="group-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>
-            <div><h3>Humanities</h3><p>Social science-focused subjects and board positions.</p></div>
-            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
-          </a>
-          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=commerce">
+            <div><h3>Humanities / Arts</h3><p>Rankings are being prepared now.</p></div>
+            <span class="card-link-label">Coming within 24 hours</span>
+          </article>
+          <article class="quick-group-card is-coming-soon" aria-disabled="true">
             <span class="group-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
-            <div><h3>Business Studies</h3><p>Accounting, finance, and business studies results.</p></div>
-            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
-          </a>
+            <div><h3>Business Studies / Commerce</h3><p>Rankings are being prepared now.</p></div>
+            <span class="card-link-label">Coming within 24 hours</span>
+          </article>
         </div>
+      </section>
+
+      <section class="visit-section" aria-labelledby="visits-title">
+        <div class="visit-copy">
+          <p class="eyebrow">Live activity</p>
+          <h2 id="visits-title">Visits on this browser</h2>
+          <p>These lightweight counts are stored on this device while SSC Rank remains a static site.</p>
+        </div>
+        <dl class="visit-stats">
+          <div><dt data-total-visits>1</dt><dd>Total visits</dd></div>
+          <div><dt data-daily-visits>1</dt><dd>Visits today</dd></div>
+          <div><dt data-online-visits>1</dt><dd>Active now</dd></div>
+        </dl>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <p data-disclaimer></p>
-        <div class="footer-links">
-          <a href="/methodology/">Methodology</a>
-          <a href="/privacy/">Privacy</a>
+    <footer class="site-footer home-footer" id="credits">
+      <div class="footer-inner home-footer-inner">
+        <div class="footer-brand-block">
+          <a class="brand" href="/">
+            <img src="/assets/logo.svg" alt="" width="34" height="34">
+            <span>SSC Rank</span>
+          </a>
+          <p>An independent community project for exploring SSC result data.</p>
+        </div>
+        <div class="footer-credit-block">
+          <p data-disclaimer></p>
+          <div class="footer-links">
+            <a href="/methodology/">Methodology</a>
+            <a href="/privacy/">Privacy</a>
+            <a href="/about/">About us</a>
+          </div>
+          <p>&copy; 2026 SSC Rank</p>
         </div>
       </div>
     </footer>

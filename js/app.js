@@ -16,7 +16,7 @@ export const SUPPORTED_EXAMS = [
     year: "2026",
     label: "SSC 2026",
     status: "active",
-    note: "Chattogram Board mock rankings are available now."
+    note: "Chattogram Board Science rankings are available now."
   },
   { exam: "ssc", year: "2025", label: "SSC 2025", status: "soon", note: "Coming soon" },
   { exam: "hsc", year: "2026", label: "HSC 2026", status: "soon", note: "Coming soon" },
@@ -40,19 +40,22 @@ export const SUPPORTED_GROUPS = [
     id: "science",
     label: "Science",
     shortLabel: "Science",
+    status: "active",
     description: "Science group rankings with physics, chemistry, biology, and higher mathematics marks."
   },
   {
     id: "humanities",
     label: "Humanities / Arts",
     shortLabel: "Humanities",
-    description: "Humanities group rankings with social science-focused mock subjects."
+    status: "soon",
+    description: "Humanities / Arts rankings are coming within the next 24 hours."
   },
   {
     id: "commerce",
     label: "Business Studies / Commerce",
     shortLabel: "Business Studies",
-    description: "Commerce group rankings with accounting, finance, and business studies mock subjects."
+    status: "soon",
+    description: "Business Studies / Commerce rankings are coming within the next 24 hours."
   }
 ];
 
@@ -99,7 +102,8 @@ export function isActiveBoard(board) {
 }
 
 export function isSupportedGroup(group) {
-  return Boolean(getGroupConfig(group));
+  const config = getGroupConfig(group);
+  return Boolean(config && config.status === "active");
 }
 
 export function titleCase(value) {
@@ -183,7 +187,13 @@ export function validateContext(context, options = {}) {
   }
 
   if (requireGroup && !isSupportedGroup(context.group)) {
-    return { ok: false, message: "That group is not available." };
+    const group = getGroupConfig(context.group);
+    return {
+      ok: false,
+      message: group?.status === "soon"
+        ? `${group.label} rankings are coming within the next 24 hours.`
+        : "That group is not available."
+    };
   }
 
   return { ok: true };
@@ -191,6 +201,19 @@ export function validateContext(context, options = {}) {
 
 function initChrome() {
   const page = document.body.dataset.page || "";
+  const context = getContext();
+  const siteNav = document.querySelector(".site-nav");
+  if (siteNav && !siteNav.querySelector('[data-nav="about"]')) {
+    const aboutLink = createTextElement("a", "", "About us");
+    aboutLink.href = "/about/";
+    aboutLink.dataset.nav = "about";
+    siteNav.append(aboutLink);
+  }
+
+  document.querySelectorAll('[data-nav="schools"]').forEach((link) => {
+    link.href = buildUrl("/school/", context);
+  });
+
   document.querySelectorAll("[data-nav]").forEach((link) => {
     const activePage = page === "result" ? "rankings" : page === "school" ? "schools" : page;
     if (link.dataset.nav === activePage) {
@@ -218,7 +241,7 @@ function initMobileChrome(page) {
   if (document.querySelector(".mobile-nav")) return;
 
   const rankingsUrl = buildUrl("/rankings/", context);
-  const schoolUrl = buildUrl("/school/", { ...context, id: 1 });
+  const schoolUrl = buildUrl("/school/", context);
   const activePage = page === "result" ? "rankings" : page === "school" ? "schools" : page;
   const nav = document.createElement("nav");
   nav.className = "mobile-nav";
@@ -233,11 +256,12 @@ function initMobileChrome(page) {
     <a class="${activePage === "schools" ? "is-active" : ""}" href="${schoolUrl}" ${activePage === "schools" ? 'aria-current="page"' : ""}>
       <i data-lucide="school" aria-hidden="true"></i><span>Schools</span>
     </a>
-    <details class="mobile-more ${activePage === "methodology" || activePage === "privacy" ? "is-active" : ""}">
+    <details class="mobile-more ${["methodology", "privacy", "about"].includes(activePage) ? "is-active" : ""}">
       <summary><i data-lucide="menu" aria-hidden="true"></i><span>More</span></summary>
       <div class="mobile-more-menu">
         <a href="/methodology/"><i data-lucide="list-checks" aria-hidden="true"></i><span>Methodology</span></a>
         <a href="/privacy/"><i data-lucide="lock-keyhole" aria-hidden="true"></i><span>Privacy</span></a>
+        <a href="/about/"><i data-lucide="users" aria-hidden="true"></i><span>About us</span></a>
       </div>
     </details>`;
   document.body.append(nav);
@@ -265,7 +289,8 @@ function initIcons() {
     "book-open": '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2Z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7Z"></path>',
     "chart-no-axes-combined": '<path d="m3 17 6-6 4 4 8-8"></path><path d="M17 7h4v4"></path><path d="M5 21h14"></path>',
     "list-ordered": '<path d="M10 6h11"></path><path d="M10 12h11"></path><path d="M10 18h11"></path><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-1 2-3 0-1-.5-2-2-2"></path>',
-    "share-2": '<circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4"></path><path d="m8.6 13.5 6.8 4"></path>'
+    "share-2": '<circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4"></path><path d="m8.6 13.5 6.8 4"></path>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'
   };
 
   document.querySelectorAll("i[data-lucide]").forEach((placeholder) => {
@@ -284,12 +309,98 @@ function initIcons() {
   });
 }
 
+function initActivityCounters() {
+  const visitKey = "ssc-rank-visits-v1";
+  const presenceKey = "ssc-rank-presence-v1";
+  const today = new Date().toISOString().slice(0, 10);
+  const sessionVisitKey = `ssc-rank-visit-${today}`;
+  const setCount = (selector, value) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      element.textContent = Number(value).toLocaleString("en-US");
+    });
+  };
+  const parseStoredObject = (value) => {
+    try {
+      return JSON.parse(value || "{}") || {};
+    } catch {
+      return {};
+    }
+  };
+
+  try {
+    const visits = parseStoredObject(localStorage.getItem(visitKey));
+    visits.total = Number(visits.total) || 0;
+    if (visits.date !== today) {
+      visits.date = today;
+      visits.daily = 0;
+    }
+    visits.daily = Number(visits.daily) || 0;
+
+    if (!sessionStorage.getItem(sessionVisitKey)) {
+      visits.total += 1;
+      visits.daily += 1;
+      sessionStorage.setItem(sessionVisitKey, "1");
+      localStorage.setItem(visitKey, JSON.stringify(visits));
+    }
+
+    setCount("[data-total-visits]", Math.max(visits.total, 1));
+    setCount("[data-daily-visits]", Math.max(visits.daily, 1));
+  } catch {
+    setCount("[data-total-visits]", 1);
+    setCount("[data-daily-visits]", 1);
+  }
+
+  let tabId = "";
+  try {
+    tabId = sessionStorage.getItem("ssc-rank-tab-id-v1") || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    sessionStorage.setItem("ssc-rank-tab-id-v1", tabId);
+  } catch {
+    setCount("[data-online-visits]", 1);
+    return;
+  }
+
+  const refreshPresence = () => {
+    try {
+      const now = Date.now();
+      const presence = parseStoredObject(localStorage.getItem(presenceKey));
+      Object.keys(presence).forEach((id) => {
+        if (now - Number(presence[id]) > 30000) delete presence[id];
+      });
+      presence[tabId] = now;
+      localStorage.setItem(presenceKey, JSON.stringify(presence));
+      setCount("[data-online-visits]", Math.max(Object.keys(presence).length, 1));
+    } catch {
+      setCount("[data-online-visits]", 1);
+    }
+  };
+
+  refreshPresence();
+  window.setInterval(refreshPresence, 10000);
+  window.addEventListener("storage", (event) => {
+    if (event.key !== presenceKey) return;
+    const presence = parseStoredObject(event.newValue);
+    const now = Date.now();
+    const activeCount = Object.values(presence).filter((timestamp) => now - Number(timestamp) <= 30000).length;
+    setCount("[data-online-visits]", Math.max(activeCount, 1));
+  });
+  window.addEventListener("beforeunload", () => {
+    try {
+      const presence = parseStoredObject(localStorage.getItem(presenceKey));
+      delete presence[tabId];
+      localStorage.setItem(presenceKey, JSON.stringify(presence));
+    } catch {
+      // Storage may be unavailable during page teardown.
+    }
+  });
+}
+
 function initHomeFinder() {
   const form = document.querySelector("[data-home-search]");
   if (!form) return;
 
   const input = form.querySelector("[data-home-query]");
   const label = form.querySelector("[data-home-query-label]");
+  const board = form.querySelector("[data-home-board]");
   const group = form.querySelector("[data-home-group]");
   const error = form.querySelector("[data-home-error]");
   const modeButtons = [...form.querySelectorAll("[data-home-mode]")];
@@ -336,7 +447,7 @@ function initHomeFinder() {
     const params = {
       exam: DEFAULT_CONTEXT.exam,
       year: DEFAULT_CONTEXT.year,
-      board: DEFAULT_CONTEXT.board,
+      board: board?.value || DEFAULT_CONTEXT.board,
       group: group.value
     };
 
@@ -392,7 +503,7 @@ function renderBoardSelection() {
       createTextElement(
         "p",
         "",
-        active ? "Available for the V1 mock-data prototype." : "Ranking support for this board is coming soon."
+        active ? "Science rankings are available now." : "Ranking support for this board is coming soon."
       )
     );
 
@@ -425,7 +536,7 @@ function renderGroupSelection() {
   }
 
   SUPPORTED_GROUPS.forEach((group) => {
-    const active = validation.ok;
+    const active = validation.ok && group.status === "active";
     const card = active ? document.createElement("a") : document.createElement("article");
     card.className = `selection-card ${active ? "is-active" : "is-disabled"}`;
 
@@ -448,8 +559,8 @@ function renderGroupSelection() {
 
     const footer = document.createElement("div");
     footer.className = "selection-card-footer";
-    footer.append(createTextElement("span", "badge", "Mock Data Ready"));
-    footer.append(createTextElement("span", "", active ? "Open rankings" : "Unavailable"));
+    footer.append(createTextElement("span", "badge", active ? "Available" : "Within 24 hours"));
+    footer.append(createTextElement("span", "", active ? "Open rankings" : "Coming soon"));
 
     card.append(content, footer);
     container.append(card);
@@ -458,6 +569,7 @@ function renderGroupSelection() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initChrome();
+  initActivityCounters();
 
   const page = document.body.dataset.page;
   if (page === "home" || page === "exam") {
@@ -466,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (page === "home") {
     initHomeFinder();
+    renderBoardSelection();
   }
 
   if (page === "board") {

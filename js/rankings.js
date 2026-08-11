@@ -10,7 +10,7 @@ import {
   persistRecentSelection,
   setStatus,
   validateContext
-} from "./app.js?v=13";
+} from "./app.js?v=14";
 import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=3";
 import { debounce, filterStudents } from "./search.js";
 

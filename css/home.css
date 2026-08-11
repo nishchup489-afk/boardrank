@@ -494,6 +494,10 @@
   font-size: 0.86rem;
 }
 
+.visit-copy [data-traffic-status].is-error {
+  color: var(--danger, #b42318);
+}
+
 .visit-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

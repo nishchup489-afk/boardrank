@@ -451,88 +451,65 @@ function initIcons() {
   });
 }
 
-function initActivityCounters() {
-  const visitKey = "ssc-rank-visits-v1";
-  const presenceKey = "ssc-rank-presence-v1";
-  const today = new Date().toISOString().slice(0, 10);
-  const sessionVisitKey = `ssc-rank-visit-${today}`;
+async function initActivityCounters() {
+  const trafficSessionKey = "ssc-rank-traffic-session-v1";
   const setCount = (selector, value) => {
     document.querySelectorAll(selector).forEach((element) => {
-      element.textContent = Number(value).toLocaleString("en-US");
+      element.textContent = value !== null && value !== undefined && Number.isFinite(Number(value))
+        ? Number(value).toLocaleString("en-US")
+        : "—";
     });
   };
-  const parseStoredObject = (value) => {
-    try {
-      return JSON.parse(value || "{}") || {};
-    } catch {
-      return {};
-    }
+  const setStatus = (message, isError = false) => {
+    document.querySelectorAll("[data-traffic-status]").forEach((element) => {
+      element.textContent = message;
+      element.classList.toggle("is-error", isError);
+    });
   };
 
+  let sessionId = "";
   try {
-    const visits = parseStoredObject(localStorage.getItem(visitKey));
-    visits.total = Number(visits.total) || 0;
-    if (visits.date !== today) {
-      visits.date = today;
-      visits.daily = 0;
+    sessionId = sessionStorage.getItem(trafficSessionKey) || "";
+    if (!sessionId) {
+      sessionId = typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+      sessionStorage.setItem(trafficSessionKey, sessionId);
     }
-    visits.daily = Number(visits.daily) || 0;
-
-    if (!sessionStorage.getItem(sessionVisitKey)) {
-      visits.total += 1;
-      visits.daily += 1;
-      sessionStorage.setItem(sessionVisitKey, "1");
-      localStorage.setItem(visitKey, JSON.stringify(visits));
-    }
-
-    setCount("[data-total-visits]", Math.max(visits.total, 1));
-    setCount("[data-daily-visits]", Math.max(visits.daily, 1));
   } catch {
-    setCount("[data-total-visits]", 1);
-    setCount("[data-daily-visits]", 1);
+    sessionId = typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
   }
 
-  let tabId = "";
-  try {
-    tabId = sessionStorage.getItem("ssc-rank-tab-id-v1") || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    sessionStorage.setItem("ssc-rank-tab-id-v1", tabId);
-  } catch {
-    setCount("[data-online-visits]", 1);
-    return;
-  }
-
-  const refreshPresence = () => {
+  const refreshTraffic = async () => {
     try {
-      const now = Date.now();
-      const presence = parseStoredObject(localStorage.getItem(presenceKey));
-      Object.keys(presence).forEach((id) => {
-        if (now - Number(presence[id]) > 30000) delete presence[id];
+      const response = await fetch("/api/traffic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify({ sessionId }),
       });
-      presence[tabId] = now;
-      localStorage.setItem(presenceKey, JSON.stringify(presence));
-      setCount("[data-online-visits]", Math.max(Object.keys(presence).length, 1));
+      if (!response.ok) throw new Error(`Traffic API returned ${response.status}`);
+
+      const traffic = await response.json();
+      setCount("[data-total-visits]", traffic.total);
+      setCount("[data-daily-visits]", traffic.today);
+      setCount("[data-online-visits]", traffic.active);
+      setStatus("Shared traffic across the entire website. Active sessions update automatically.");
     } catch {
-      setCount("[data-online-visits]", 1);
+      setCount("[data-total-visits]", null);
+      setCount("[data-daily-visits]", null);
+      setCount("[data-online-visits]", null);
+      setStatus("Live website traffic is temporarily unavailable.", true);
     }
   };
 
-  refreshPresence();
-  window.setInterval(refreshPresence, 10000);
-  window.addEventListener("storage", (event) => {
-    if (event.key !== presenceKey) return;
-    const presence = parseStoredObject(event.newValue);
-    const now = Date.now();
-    const activeCount = Object.values(presence).filter((timestamp) => now - Number(timestamp) <= 30000).length;
-    setCount("[data-online-visits]", Math.max(activeCount, 1));
-  });
-  window.addEventListener("beforeunload", () => {
-    try {
-      const presence = parseStoredObject(localStorage.getItem(presenceKey));
-      delete presence[tabId];
-      localStorage.setItem(presenceKey, JSON.stringify(presence));
-    } catch {
-      // Storage may be unavailable during page teardown.
-    }
+  await refreshTraffic();
+  window.setInterval(refreshTraffic, 30_000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshTraffic();
   });
 }
 

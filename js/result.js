@@ -8,7 +8,7 @@ import {
   getParam,
   setStatus,
   validateContext
-} from "./app.js?v=13";
+} from "./app.js?v=14";
 import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=3";
 import { addComparisonSelection, buildComparisonPath } from "./compare-state.js";
 

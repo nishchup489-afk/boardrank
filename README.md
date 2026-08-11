@@ -12,6 +12,19 @@ Python data pipeline -> static generated datasets -> HTML/CSS/JavaScript -> Clou
 
 The public ranking path is intentionally static so generated JSON can be served by a CDN without querying a live backend for every visitor.
 
+## Shared website traffic counter
+
+The homepage traffic panel uses a Cloudflare Pages Function at `/api/traffic` and a D1 database. A visit is counted once per browser tab session across the entire website. Active sessions are those that have sent a heartbeat in the last 60 seconds; daily totals use UTC.
+
+Create and initialize the D1 database before deploying:
+
+```sh
+npx wrangler d1 create ssc-rank-traffic
+npx wrangler d1 execute ssc-rank-traffic --remote --file=migrations/0001_traffic.sql
+```
+
+In the Cloudflare Pages project settings, add a D1 binding named `DB` that points to `ssc-rank-traffic`, then redeploy the project. Local static servers do not run Pages Functions, so the traffic panel will show an unavailable state unless Pages Functions and D1 are available.
+
 ## Run locally
 
 ```powershell

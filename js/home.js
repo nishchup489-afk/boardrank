@@ -1,5 +1,5 @@
-import { DEFAULT_CONTEXT, buildUrl } from "./app.js?v=16";
-import { loadGroupData } from "./mock-data.js?v=7";
+import { DEFAULT_CONTEXT, buildUrl } from "./app.js?v=17";
+import { loadGroupData } from "./mock-data.js?v=8";
 import { debounce, rankTextMatches } from "./search.js?v=4";
 
 const groupDataCache = new Map();

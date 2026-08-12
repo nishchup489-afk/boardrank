@@ -1,4 +1,4 @@
-import { PAGE_SIZE, getGroupConfig } from "./app.js?v=16";
+import { PAGE_SIZE, getGroupConfig } from "./app.js?v=17";
 import { filterStudents } from "./search.js?v=4";
 
 const cache = new Map();

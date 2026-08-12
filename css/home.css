@@ -644,6 +644,11 @@
   padding: 46px 0 50px;
 }
 
+.home-page > .board-section:first-child {
+  border-top: 0;
+  padding-top: 34px;
+}
+
 .board-section .browse-heading {
   margin-bottom: 6px;
 }

@@ -36,6 +36,7 @@ function cacheElements() {
     error: document.querySelector("[data-error-state]"),
     content: document.querySelector("[data-rankings-content]"),
     podium: document.querySelector("[data-podium]"),
+    podiumSection: document.querySelector(".podium-section"),
     tableBody: document.querySelector("[data-leaderboard-body]"),
     mobileList: document.querySelector("[data-mobile-leaderboard]"),
     pagination: document.querySelector("[data-pagination]"),
@@ -362,12 +363,8 @@ function renderMobileRows(rows) {
 
 function getVisibleRows() {
   const pageSize = getPageSize();
-  if (activeSearch && activeSearch.kind === "name") {
+  if (activeSearch && ["name", "roll"].includes(activeSearch.kind)) {
     return getLeaderboardPageFromData(activeSearch.results, currentPage, pageSize);
-  }
-
-  if (activeSearch && activeSearch.kind === "roll" && !activeSearch.results.length) {
-    return { page: 1, totalPages: 1, totalRows: 0, rows: [] };
   }
 
   return getLeaderboardPageFromData(groupData.students, currentPage, pageSize);
@@ -379,12 +376,13 @@ function renderPagination(pageData) {
   elements.next.disabled = pageData.page >= pageData.totalPages;
   elements.last.disabled = pageData.page >= pageData.totalPages;
   elements.pageStatus.textContent = `Page ${pageData.page} of ${pageData.totalPages}`;
-  elements.pagination.hidden = pageData.totalRows === 0;
+  elements.pagination.hidden = pageData.totalRows === 0 || Boolean(activeSearch && pageData.totalPages <= 1);
 }
 
 function renderLeaderboard() {
   const pageData = getVisibleRows();
   currentPage = pageData.page;
+  elements.podiumSection.hidden = Boolean(activeSearch);
 
   if (pageData.totalRows === 0) {
     elements.leaderboardNote.textContent = "No student found. Check the roll or name and try again.";
@@ -455,7 +453,7 @@ function applySearch(query) {
       results: result.results,
       roll: student ? student.roll : trimmed
     };
-    currentPage = student ? Math.ceil(student.rank / getPageSize()) : 1;
+    currentPage = 1;
     setSearchFeedback(
       student
         ? `Found ${student.name} at board rank #${student.rank}.`

@@ -7,8 +7,8 @@ const RESPONSE_HEADERS = {
 // Change `total` below when you want to manually add to or subtract from the
 // displayed total. Keep it at 0 to show the exact live D1 total.
 const TRAFFIC_COUNTER_ADJUSTMENTS = Object.freeze({
-  total: 7456, // <-- EDIT THIS NUMBER FOR THE TOTAL SITE VISITS DISPLAY
-  today: 4532,
+  total: 8456, // <-- EDIT THIS NUMBER FOR THE TOTAL SITE VISITS DISPLAY
+  today: 2532,
   active: 32,
 });
 

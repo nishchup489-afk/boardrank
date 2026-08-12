@@ -19,7 +19,7 @@ export const SUPPORTED_EXAMS = [
     year: "2026",
     label: "SSC 2026",
     status: "active",
-    note: "Chattogram Board Science and Business Studies rankings are available now."
+    note: "Chattogram Board Science, Humanities, and Business Studies rankings are available now."
   },
   { exam: "ssc", year: "2025", label: "SSC 2025", status: "soon", note: "Coming soon" },
   { exam: "hsc", year: "2026", label: "HSC 2026", status: "soon", note: "Coming soon" },
@@ -49,9 +49,9 @@ export const SUPPORTED_GROUPS = [
   {
     id: "humanities",
     label: "Humanities / Arts",
-    shortLabel: "Humanities",
-    status: "soon",
-    description: "Humanities / Arts rankings are coming within the next 24 hours."
+    shortLabel: "Humanities / Arts",
+    status: "active",
+    description: "Humanities / Arts board and school rankings using GPA and total marks."
   },
   {
     id: "commerce",
@@ -388,15 +388,16 @@ function initMobileChrome(page) {
     <a class="${activePage === "rankings" ? "is-active" : ""}" href="${rankingsUrl}" ${activePage === "rankings" ? 'aria-current="page"' : ""}>
       <i data-lucide="trophy" aria-hidden="true"></i><span>Rankings</span>
     </a>
-    <a class="${activePage === "compare" ? "is-active" : ""}" href="/compare/" ${activePage === "compare" ? 'aria-current="page"' : ""}>
-      <i data-lucide="git-compare-arrows" aria-hidden="true"></i><span>Compare</span>
+    <a class="mobile-find-action" href="/#home-query">
+      <span class="mobile-find-icon"><i data-lucide="search" aria-hidden="true"></i></span><span>Find result</span>
     </a>
     <a class="${activePage === "schools" ? "is-active" : ""}" href="${schoolUrl}" ${activePage === "schools" ? 'aria-current="page"' : ""}>
       <i data-lucide="school" aria-hidden="true"></i><span>Schools</span>
     </a>
-    <details class="mobile-more ${["college", "privacy", "agreement", "about"].includes(activePage) ? "is-active" : ""}">
+    <details class="mobile-more ${["compare", "college", "privacy", "agreement", "about"].includes(activePage) ? "is-active" : ""}">
       <summary><i data-lucide="menu" aria-hidden="true"></i><span>More</span></summary>
       <div class="mobile-more-menu">
+        <a href="/compare/"><i data-lucide="git-compare-arrows" aria-hidden="true"></i><span>Compare students</span></a>
         <a href="/college/"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>College selection</span></a>
         <a href="/privacy/"><i data-lucide="lock-keyhole" aria-hidden="true"></i><span>Privacy</span></a>
         <a href="/agreement/"><i data-lucide="file-check-2" aria-hidden="true"></i><span>Agreement</span></a>
@@ -404,6 +405,14 @@ function initMobileChrome(page) {
       </div>
     </details>`;
   document.body.append(nav);
+
+  nav.querySelector(".mobile-find-action")?.addEventListener("click", (event) => {
+    const finder = document.querySelector("[data-home-query]");
+    if (!finder) return;
+    event.preventDefault();
+    finder.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => finder.focus({ preventScroll: true }), 250);
+  });
 
   const more = nav.querySelector(".mobile-more");
   document.addEventListener("click", (event) => {
@@ -546,11 +555,6 @@ function initHomeFinder() {
     label.textContent = content.label;
     input.placeholder = content.placeholder;
     input.setAttribute("inputmode", content.inputMode);
-    if (mode === "institution") {
-      input.setAttribute("list", "home-institution-options");
-    } else {
-      input.removeAttribute("list");
-    }
     input.value = "";
     error.hidden = true;
     input.focus();
@@ -643,7 +647,7 @@ function renderBoardSelection() {
       createTextElement(
         "p",
         "",
-        active ? "Science and Business Studies rankings are available now." : "Ranking support for this board is coming soon."
+        active ? "Science, Humanities, and Business Studies rankings are available now." : "Ranking support for this board is coming soon."
       )
     );
 

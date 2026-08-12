@@ -347,6 +347,59 @@ h3 {
   color: var(--text);
 }
 
+.search-match-feedback {
+  margin: 7px 0 0;
+  color: var(--primary-strong);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.search-suggestions {
+  max-height: 300px;
+  display: grid;
+  gap: 3px;
+  overflow-y: auto;
+  margin-top: 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 5px;
+}
+
+.search-suggestion-item {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.search-suggestion-item:hover,
+.search-suggestion-item:focus-visible {
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
+.search-suggestion-primary,
+.search-suggestion-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-suggestion-primary {
+  font-family: var(--font-display);
+  font-size: 0.84rem;
+}
+
+.search-suggestion-meta {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .button,
 button.button {
   min-height: 44px;
@@ -718,7 +771,7 @@ body.has-consent-gate {
     z-index: 40;
     min-height: calc(64px + env(safe-area-inset-bottom));
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(72px, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
     border-top: 1px solid var(--line);
     background: rgba(255, 255, 255, 0.98);
     padding: 5px 8px env(safe-area-inset-bottom);
@@ -757,6 +810,33 @@ body.has-consent-gate {
   .mobile-nav .lucide {
     width: 21px;
     height: 21px;
+  }
+
+  .mobile-nav > a.mobile-find-action {
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+    color: var(--primary-strong);
+    font-weight: 800;
+  }
+
+  .mobile-find-icon {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    margin-top: -25px;
+    border: 5px solid var(--bg);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 7px 18px rgba(7, 83, 68, 0.28);
+    color: #fff;
+  }
+
+  .mobile-nav .mobile-find-icon .lucide {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.5;
   }
 
   .mobile-more {

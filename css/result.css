@@ -445,9 +445,13 @@ body.has-open-modal {
 
 .school-search-feedback {
   margin: 7px 0 0;
-  color: var(--danger);
+  color: var(--primary-strong);
   font-size: 0.78rem;
   font-weight: 650;
+}
+
+.school-search-feedback.is-error {
+  color: var(--danger);
 }
 
 .school-name {

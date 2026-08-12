@@ -10,9 +10,9 @@ import {
   persistRecentSelection,
   setStatus,
   validateContext
-} from "./app.js?v=14";
-import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=3";
-import { debounce, filterStudents } from "./search.js";
+} from "./app.js?v=16";
+import { getLeaderboardPageFromData, loadGroupData } from "./mock-data.js?v=7";
+import { debounce, filterStudents } from "./search.js?v=4";
 
 const MOBILE_PAGE_SIZE = 25;
 const mobilePageQuery = window.matchMedia("(max-width: 760px)");

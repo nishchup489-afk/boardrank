@@ -8,9 +8,10 @@ import {
   getParam,
   setStatus,
   validateContext
-} from "./app.js?v=14";
-import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=3";
+} from "./app.js?v=16";
+import { getSchoolById, getStudentByRoll, loadGroupData } from "./mock-data.js?v=7";
 import { addComparisonSelection, buildComparisonPath } from "./compare-state.js";
+import { debounce, rankTextMatches } from "./search.js?v=4";
 
 let context = null;
 let data = null;
@@ -343,36 +344,100 @@ function isSearchableSchool(school) {
 }
 
 function findSchoolByQuery(schools, value) {
-  const query = String(value || "").trim().toLowerCase();
+  const query = String(value || "").trim();
   if (!query) return null;
-  return schools.find((school) => getSchoolName(school).toLowerCase() === query)
-    || schools.find((school) => getSchoolName(school).toLowerCase().includes(query))
-    || null;
+  return rankTextMatches(schools, query, getSchoolName, 1).results[0] || null;
 }
 
 function initSchoolSearch(schools, selectedSchool = null) {
   const form = document.querySelector("[data-school-search-form]");
   const input = document.querySelector("[data-school-search-input]");
-  const options = document.querySelector("[data-school-options]");
+  const suggestions = document.querySelector("[data-school-suggestions]");
   const feedback = document.querySelector("[data-school-search-feedback]");
-  if (!form || !input || !options) return;
+  if (!form || !input || !suggestions || !feedback) return;
 
-  options.textContent = "";
-  schools.forEach((school) => {
-    const option = document.createElement("option");
-    option.value = getSchoolName(school);
-    options.append(option);
-  });
   if (selectedSchool) input.value = getSchoolName(selectedSchool);
+
+  const hideSuggestions = () => {
+    suggestions.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+  };
+
+  const renderSuggestions = () => {
+    const query = input.value.trim();
+    suggestions.textContent = "";
+    feedback.classList.remove("is-error");
+
+    if (query.length < 2) {
+      feedback.textContent = "";
+      feedback.hidden = true;
+      hideSuggestions();
+      return;
+    }
+
+    const matches = rankTextMatches(schools, query, getSchoolName, 6);
+    feedback.textContent = matches.total
+      ? `${matches.total.toLocaleString()} matching school${matches.total === 1 ? "" : "s"} found.`
+      : "No matching schools found. Try another spelling.";
+    feedback.hidden = false;
+
+    if (!matches.results.length) {
+      hideSuggestions();
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    matches.results.forEach((school) => {
+      const link = document.createElement("a");
+      link.className = "search-suggestion-item";
+      link.href = buildUrl("/school/", {
+        exam: context.exam,
+        year: context.year,
+        board: context.board,
+        group: context.group,
+        id: school.id
+      });
+
+      const primary = document.createElement("strong");
+      primary.className = "search-suggestion-primary";
+      primary.textContent = getSchoolName(school);
+      const meta = document.createElement("span");
+      meta.className = "search-suggestion-meta";
+      meta.textContent = "View this school's ranked students";
+      link.append(primary, meta);
+      fragment.append(link);
+    });
+
+    suggestions.append(fragment);
+    suggestions.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+
+  const debouncedSuggestions = debounce(renderSuggestions, 140);
+  input.addEventListener("input", debouncedSuggestions);
+  input.addEventListener("focus", renderSuggestions);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      hideSuggestions();
+    } else if (event.key === "ArrowDown" && !suggestions.hidden) {
+      event.preventDefault();
+      suggestions.querySelector("a")?.focus();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!form.contains(event.target)) hideSuggestions();
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const query = input.value.trim();
+    feedback.classList.remove("is-error");
     feedback.hidden = true;
     const match = findSchoolByQuery(schools, query);
 
     if (!match) {
       feedback.textContent = "No ranked school matched that name. Try another spelling.";
+      feedback.classList.add("is-error");
       feedback.hidden = false;
       input.focus();
       return;

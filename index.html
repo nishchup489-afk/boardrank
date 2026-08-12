@@ -7,11 +7,11 @@
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <title>SSC 2026 Chattogram Board Rankings &amp; Result Search | SSC Rank</title>
     <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/css/global.css?v=5">
-    <link rel="stylesheet" href="/css/home.css?v=7">
-    <script type="module" src="/js/app.js?v=14"></script>
-    <script type="module" src="/js/home.js?v=3"></script>
-    <script type="module" src="/js/seo.js?v=1"></script>
+    <link rel="stylesheet" href="/css/global.css?v=6">
+    <link rel="stylesheet" href="/css/home.css?v=8">
+    <script type="module" src="/js/app.js?v=16"></script>
+    <script type="module" src="/js/home.js?v=7"></script>
+    <script type="module" src="/js/seo.js?v=2"></script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3290118997384281"
      crossorigin="anonymous"></script>
@@ -46,15 +46,15 @@
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-copy">
           <div class="context-chips" aria-label="Available ranking context">
-            <span class="context-chip is-live">Science &amp; Business Studies available</span>
+            <span class="context-chip is-live">All three groups available</span>
             <span class="context-chip">SSC 2026</span>
             <span class="context-chip">Chattogram Board</span>
           </div>
           <p class="eyebrow">Unofficial result insights</p>
           <h1 id="home-title">Find where you stand.</h1>
-          <p class="lead">Search by roll number, student name, or institution across the available Science and Business Studies results.</p>
+          <p class="lead">Search by roll number, student name, or institution across Science, Humanities, and Business Studies results.</p>
           <p class="notice warning release-notice">
-            <strong>Coming soon:</strong> Humanities / Arts rankings and College Selection.
+            <strong>New:</strong> Humanities / Arts rankings are now available. College Selection is coming soon.
           </p>
         </div>
 
@@ -90,15 +90,16 @@
               <label class="form-label" for="home-group">Student group</label>
               <select id="home-group" data-home-group>
                 <option value="science">Science</option>
-                <option value="humanities" disabled>Humanities / Arts - Within 24 hours</option>
+                <option value="humanities">Humanities / Arts</option>
                 <option value="commerce">Business Studies / Commerce</option>
               </select>
             </div>
 
-            <div>
+            <div class="finder-query-field">
               <label class="form-label" data-home-query-label for="home-query">Roll number</label>
-              <input id="home-query" data-home-query type="search" inputmode="numeric" autocomplete="off" placeholder="Enter roll number" required>
-              <datalist id="home-institution-options" data-home-institution-options></datalist>
+              <input id="home-query" data-home-query type="search" inputmode="numeric" autocomplete="off" placeholder="Enter roll number" aria-controls="home-search-suggestions" aria-expanded="false" required>
+              <p class="search-match-feedback" data-home-feedback role="status" aria-live="polite" hidden></p>
+              <div id="home-search-suggestions" class="search-suggestions" data-home-suggestions aria-label="Search suggestions" hidden></div>
             </div>
 
             <button class="button finder-submit" type="submit">
@@ -113,6 +114,20 @@
             <span>Unofficial ranking based on available SSC result data. <a href="/privacy/">Privacy &amp; data</a></span>
           </p>
         </section>
+      </section>
+
+      <section class="science-champions" aria-labelledby="science-champions-title">
+        <div class="champions-heading">
+          <div>
+            <p class="eyebrow">Science board leaders</p>
+            <h2 id="science-champions-title">Meet the Science top three</h2>
+            <p>Tap a student to view their complete result and school ranking.</p>
+          </div>
+          <a href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=science">View Science leaderboard</a>
+        </div>
+        <div class="champions-podium" data-science-top-three aria-live="polite">
+          <p class="champions-status">Loading the Science board leaders…</p>
+        </div>
       </section>
 
       <section class="board-section" id="boards" aria-labelledby="boards-title">
@@ -158,11 +173,11 @@
             <div><h3>Science</h3><p>Physics, chemistry, biology, and higher mathematics.</p></div>
             <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
           </a>
-          <article class="quick-group-card is-coming-soon" aria-disabled="true">
+          <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=humanities">
             <span class="group-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>
-            <div><h3>Humanities / Arts</h3><p>Rankings are being prepared now.</p></div>
-            <span class="card-link-label">Coming within 24 hours</span>
-          </article>
+            <div><h3>Humanities / Arts</h3><p>Humanities board and school rankings using GPA and total marks.</p></div>
+            <span class="card-link-label">Open rankings <span aria-hidden="true">-&gt;</span></span>
+          </a>
           <a class="quick-group-card" href="/rankings/?exam=ssc&amp;year=2026&amp;board=chattogram&amp;group=commerce">
             <span class="group-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
             <div><h3>Business Studies / Commerce</h3><p>Accounting, finance and banking, and business entrepreneurship.</p></div>
@@ -183,7 +198,7 @@
             <div><h3>What can I search?</h3><p>Search available records by roll number, student name, or institution, then see the listed board and school position.</p></div>
           </article>
           <article class="quick-group-card">
-            <div><h3>Which results are available?</h3><p>SSC 2026 Chattogram Board Science and Business Studies records are available. Other groups and boards are being prepared.</p></div>
+            <div><h3>Which results are available?</h3><p>SSC 2026 Chattogram Board Science, Humanities / Arts, and Business Studies records are available. Other boards are being prepared.</p></div>
           </article>
           <article class="quick-group-card">
             <div><h3>Is this official?</h3><p>No. SSC Rank is an independent result-exploration project and is not issued or endorsed by an education board.</p></div>
@@ -198,6 +213,7 @@
           <p data-traffic-status aria-live="polite">Loading shared website traffic…</p>
         </div>
         <dl class="visit-stats">
+          <!-- EASY UPDATE: adjust TRAFFIC_COUNTER_ADJUSTMENTS.total in /functions/api/traffic.js -->
           <div><dt data-total-visits>—</dt><dd>Total site visits</dd></div>
           <div><dt data-daily-visits>—</dt><dd>Visits today</dd></div>
           <div><dt data-online-visits>—</dt><dd>Active sessions</dd></div>

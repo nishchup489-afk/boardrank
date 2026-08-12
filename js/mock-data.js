@@ -1,5 +1,5 @@
-import { PAGE_SIZE, getGroupConfig } from "./app.js?v=14";
-import { filterStudents } from "./search.js";
+import { PAGE_SIZE, getGroupConfig } from "./app.js?v=16";
+import { filterStudents } from "./search.js?v=4";
 
 const cache = new Map();
 const rollIndexCache = new Map();

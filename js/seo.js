@@ -1,11 +1,11 @@
 const PAGE_META = {
   "/": {
     title: "SSC 2026 Chattogram Board Rankings & Result Search | SSC Rank",
-    description: "Search available SSC 2026 Chattogram Board result records by roll number, student name, or school. Explore unofficial Science and Business Studies rankings.",
+    description: "Search available SSC 2026 Chattogram Board result records by roll number, student name, or school. Explore unofficial Science, Humanities, and Business Studies rankings.",
   },
   "/rankings/": {
     title: "SSC 2026 Chattogram Board Rankings | SSC Rank",
-    description: "Browse unofficial SSC 2026 Chattogram Board rankings and search available Science and Business Studies result records.",
+    description: "Browse unofficial SSC 2026 Chattogram Board rankings and search available Science, Humanities, and Business Studies result records.",
   },
   "/school/": {
     title: "SSC 2026 School Rankings — Chattogram Board | SSC Rank",

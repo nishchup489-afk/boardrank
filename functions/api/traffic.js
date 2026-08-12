@@ -3,6 +3,15 @@ const RESPONSE_HEADERS = {
   "Cache-Control": "no-store, no-cache, must-revalidate",
 };
 
+// EASY-TO-EDIT TRAFFIC COUNTER ADJUSTMENTS
+// Change `total` below when you want to manually add to or subtract from the
+// displayed total. Keep it at 0 to show the exact live D1 total.
+const TRAFFIC_COUNTER_ADJUSTMENTS = Object.freeze({
+  total: 0, // <-- EDIT THIS NUMBER FOR THE TOTAL SITE VISITS DISPLAY
+  today: 0,
+  active: 0,
+});
+
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -25,9 +34,14 @@ async function readTraffic(db, now) {
   ]);
 
   return {
-    total: getResultValue(totalResult, "count"),
-    today: getResultValue(dailyResult, "count"),
-    active: getResultValue(activeBaselineResult, "count") + getResultValue(activeResult, "count"),
+    total: Math.max(0, getResultValue(totalResult, "count") + TRAFFIC_COUNTER_ADJUSTMENTS.total),
+    today: Math.max(0, getResultValue(dailyResult, "count") + TRAFFIC_COUNTER_ADJUSTMENTS.today),
+    active: Math.max(
+      0,
+      getResultValue(activeBaselineResult, "count")
+        + getResultValue(activeResult, "count")
+        + TRAFFIC_COUNTER_ADJUSTMENTS.active,
+    ),
     updatedAt: new Date(now).toISOString(),
   };
 }
